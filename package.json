@@ -1,0 +1,47 @@
+{
+  "private": true,
+  "name": "remix-blog",
+  "description": "",
+  "license": "",
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev",
+    "postinstall": "remix setup node",
+    "dev:netlify": "cross-env NODE_ENV=development netlify dev",
+    "watch:css": "postcss styles --base styles --dir src/styles -w",
+    "build:css": "postcss styles --base styles --dir src/styles --env production",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.4.2",
+    "@netlify/functions": "^0.7.2",
+    "@remix-run/netlify": "^1.0.5",
+    "@remix-run/react": "^1.0.5",
+    "@remix-run/serve": "^1.0.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "remix": "^1.0.5"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.0.5",
+    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/react-hooks": "^7.0.2",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "autoprefixer": "^10.4.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.13.15",
+    "esbuild-jest": "^0.5.0",
+    "jest": "^27.3.1",
+    "jest-fetch-mock": "^3.0.3",
+    "postcss": "^8.4.1",
+    "postcss-cli": "^9.0.2",
+    "tailwindcss": "^2.2.19",
+    "typescript": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "sideEffects": false
+}
