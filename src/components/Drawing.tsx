@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const colors = [
   "1abc9c",
@@ -14,18 +14,19 @@ const colors = [
 ];
 
 export default function Drawing() {
-  const canvasRef = React.useRef<HTMLCanvasElement>();
-  const pixiRef = React.useRef();
-  const previousPaintRef = React.useRef<{ x: number; y: number } | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>();
+  const pixiRef = useRef();
+  const previousPaintRef = useRef<{ x: number; y: number } | null>(null);
 
-  const [drawing, setDrawing] = React.useState(false);
-  const [color, setColor] = React.useState(colors[0]);
+  const [drawing, setDrawing] = useState(false);
+  const [color, setColor] = useState(colors[0]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     pixiRef.current = new PIXI.Application({
       width: 512,
       height: 512,
       view: canvasRef.current,
+      antialias: true,
     });
 
     return () => {
@@ -35,13 +36,13 @@ export default function Drawing() {
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const cb = (event: MouseEvent) => {
       if (drawing && pixiRef.current) {
         const graphics = new PIXI.Graphics();
 
-        graphics.lineStyle(5, parseInt(color, 16), 1, 0.5, true);
-        console.log(event);
+        graphics.lineStyle(2, parseInt(color, 16), 1, 0.5, true);
+
         if (previousPaintRef.current) {
           graphics.moveTo(
             previousPaintRef.current.x,
@@ -74,7 +75,7 @@ export default function Drawing() {
     };
   }, [drawing, color]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const cb = (event: MouseEvent) => {
       setDrawing(true);
     };
