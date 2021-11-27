@@ -1,4 +1,6 @@
 import { installGlobals } from "@remix-run/node";
-import "jest-fetch-mock/setupJest";
+import React from "react";
 
 installGlobals();
+
+global.React = React;
