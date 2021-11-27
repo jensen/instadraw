@@ -4,7 +4,7 @@ import { renderWithRouter } from "../utils/render";
 
 describe("Index Route", () => {
   describe("loader", () => {
-    it("should", async () => {
+    it("should return a message", async () => {
       const response = await loader({
         request: new Request("/"),
         params: {},
@@ -18,12 +18,11 @@ describe("Index Route", () => {
   });
 
   describe("view", () => {
-    it("should", () => {
-      const { debug } = renderWithRouter(
-        <View data={{ message: "Basic Loader" }} />,
-        { route: "/" }
-      );
-      debug();
+    it("should render with and display the message", () => {
+      renderWithRouter(<View data={{ message: "Basic Loader" }} />, {
+        route: "/",
+      });
+
       expect(screen.getByText("Basic Loader")).toBeInTheDocument();
     });
   });

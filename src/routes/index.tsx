@@ -1,6 +1,8 @@
 import type { MetaFunction, LoaderFunction } from "remix";
 import { useLoaderData, json, Link } from "remix";
 
+import Drawing from "~/components/Drawing";
+
 type IndexData = {
   message: string;
 };
@@ -28,6 +30,7 @@ export function View(props: IViewProps) {
   return (
     <>
       <Link to="/">{props.data.message}</Link>
+      <Drawing />
     </>
   );
 }
