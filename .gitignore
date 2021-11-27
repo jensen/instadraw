@@ -6,5 +6,7 @@ node_modules
 /.netlify
 /build
 
+/src/styles
+
 /.env
 /.env.*
