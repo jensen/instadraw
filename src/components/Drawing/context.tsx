@@ -46,6 +46,14 @@ const DrawingContext = React.createContext<IDrawingContext>({
   unhighlightLayer: nop,
 });
 
+const applicationConfig = {
+  width: WIDTH,
+  height: HEIGHT,
+  antialias: true,
+  backgroundColor: 0xffffff,
+  backgroundAlpha: 1,
+};
+
 interface IDrawingProviderProps {
   children: React.ReactNode;
 }
@@ -65,10 +73,8 @@ export function DrawingProvider(props: IDrawingProviderProps) {
 
   useEffect(() => {
     rendererRef.current = new PIXI.Application({
-      width: WIDTH,
-      height: HEIGHT,
+      ...applicationConfig,
       view: canvasRef.current,
-      antialias: true,
     });
 
     if (!rendererRef.current) {
@@ -109,7 +115,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
             graphics.drawCircle(x, y, brush);
 
           if (previousPointRef.current) {
-            interpolateDirect(draw, previousPointRef.current, to, 16);
+            interpolateDirect(draw, previousPointRef.current, to, 64);
           } else {
             draw(to.x, to.y);
           }
@@ -150,14 +156,14 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     setLayer(selected > 0 ? selected : 0);
   };
 
-  const highlightLayer = (index) => {
+  const highlightLayer = (index: number) => {
     const layers = rendererRef.current?.stage.getChildAt(0) as Container;
     const current = layers.getChildAt(index) as Graphics;
 
     current.tint = 0xdddddd;
   };
 
-  const unhighlightLayer = (index) => {
+  const unhighlightLayer = (index: number) => {
     const layers = rendererRef.current?.stage.getChildAt(0) as Container;
     const current = layers.getChildAt(index) as Graphics;
 

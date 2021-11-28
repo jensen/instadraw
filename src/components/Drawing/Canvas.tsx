@@ -5,6 +5,12 @@ export default function Canvas(props) {
   const { startDrawing, stopDrawing } = useDrawing();
 
   return (
-    <canvas ref={canvas} onMouseUp={stopDrawing} onMouseDown={startDrawing} />
+    <canvas
+      ref={canvas}
+      width="540px"
+      height="675px"
+      onMouseUp={stopDrawing}
+      onMouseDown={startDrawing}
+    />
   );
 }

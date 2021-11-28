@@ -21,7 +21,7 @@ export default function Post(props) {
         <Form method="post">
           <section className="flex">
             <input
-              className="w-full bg-gray-50 text-md"
+              className="w-full bg-gray-50 text-md focus:outline-none"
               placeholder="Add a comment..."
             />
             <button>Post</button>

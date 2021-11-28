@@ -9,7 +9,7 @@ export default function Drawing() {
   return (
     <DrawingProvider>
       <div className="flex">
-        <div className="" style={{ width: "540px", height: "675px" }}>
+        <div className="bg-white">
           <Canvas />
         </div>
         <Layers />

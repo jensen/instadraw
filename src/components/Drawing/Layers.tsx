@@ -36,7 +36,7 @@ export default function Layers(props) {
           </li>
         ))}
       </ul>
-      <div className="flex p-2">
+      <div className="w-24 flex p-2">
         <div
           className="w-full rounded-md border p-2 cursor-pointer bg-gray-800 hover:bg-gray-900 hover:shadow-md"
           onClick={add}
