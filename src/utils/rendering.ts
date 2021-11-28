@@ -1,4 +1,6 @@
-export const interpolate = (from, to, detail = 3) => {
+import type { Point } from "pixi.js";
+
+export const interpolate = (from: Point, to: Point, detail = 3) => {
   const points = [from];
 
   for (let i = 1; i < detail; i++) {
@@ -15,7 +17,7 @@ export const interpolate = (from, to, detail = 3) => {
   return points;
 };
 
-export const interpolateDirect = (cb, from, to, detail = 3) => {
+export const interpolateDirect = (cb, from: Point, to: Point, detail = 3) => {
   for (let i = 0; i <= detail; i++) {
     cb(
       from.x + (to.x - from.x) * (i / detail),
