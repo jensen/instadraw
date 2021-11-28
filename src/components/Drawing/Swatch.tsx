@@ -1,6 +1,7 @@
 import { useBrush, useColor } from "./context";
 
-import colors from "./data/bobross.json";
+import bobross from "./data/bobross.json";
+import flatui from "./data/flatui.json";
 
 interface ISizeProps {
   color: string;
@@ -22,10 +23,12 @@ function Color(props: ISizeProps) {
 
 export default function Swatch(props) {
   return (
-    <div className="flex space-x-2 p-4">
-      {colors.map(({ id, value }) => (
-        <Color key={id} color={value} />
-      ))}
+    <div>
+      <div className="flex space-x-2 px-4 py-2">
+        {bobross.map(({ id, value }) => (
+          <Color key={id} color={value} />
+        ))}
+      </div>
     </div>
   );
 }

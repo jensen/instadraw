@@ -45,6 +45,7 @@ function Document({
       </head>
       <body>
         {children}
+        <RouteChangeAnnouncement />
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
@@ -54,7 +55,18 @@ function Document({
 }
 
 function Layout({ children }: React.PropsWithChildren<{}>) {
-  return <>{children}</>;
+  return (
+    <section className="h-full flex flex-col">
+      <header className="p-4 bg-white border-b">
+        <h3 className="font-bold text-3xl">picstagram</h3>
+      </header>
+      <main className="flex-1 relative">
+        <section className="h-full w-full p-4 absolute overflow-x-hidden overflow-y-scroll">
+          {children}
+        </section>
+      </main>
+    </section>
+  );
 }
 
 export function CatchBoundary() {

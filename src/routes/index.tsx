@@ -1,7 +1,7 @@
 import type { MetaFunction, LoaderFunction } from "remix";
 import { useLoaderData, json, Link } from "remix";
 
-import Drawing from "~/components/Drawing";
+import Post from "~/components/Post";
 
 type IndexData = {
   message: string;
@@ -28,8 +28,9 @@ interface IViewProps {
 
 export function View(props: IViewProps) {
   return (
-    <div className="h-full flex flex-col justify-center items-center">
-      <Drawing />
+    <div className="flex flex-col items-center space-y-8">
+      <Post />
+      <Post />
     </div>
   );
 }

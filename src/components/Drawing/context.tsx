@@ -12,20 +12,8 @@ import { interpolateDirect } from "~/utils/rendering";
 const WIDTH = 1080 / 2;
 const HEIGHT = 1350 / 2;
 
-// const colors = [
-//   "1abc9c",
-//   "2ecc71",
-//   "3498db",
-//   "9b59b6",
-//   "34495e",
-//   "f1c40f",
-//   "e67e22",
-//   "e74c3c",
-//   "ecf0f1",
-//   "95a5a6",
-// ];
-
 interface IDrawingContext {
+  renderer?: React.MutableRefObject<Application | undefined>;
   canvas?: React.MutableRefObject<HTMLCanvasElement | undefined>;
   brush: number | null;
   setBrush: React.Dispatch<React.SetStateAction<number>>;
@@ -33,6 +21,7 @@ interface IDrawingContext {
   setColor: React.Dispatch<React.SetStateAction<string>>;
   startDrawing: () => void;
   stopDrawing: () => void;
+  addLayer: () => void;
 }
 
 const DrawingContext = React.createContext<IDrawingContext>({
@@ -42,6 +31,7 @@ const DrawingContext = React.createContext<IDrawingContext>({
   setColor: (value: React.SetStateAction<string>) => null,
   startDrawing: () => null,
   stopDrawing: () => null,
+  addLayer: () => null,
 });
 
 interface IDrawingProviderProps {
@@ -53,49 +43,20 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   const rendererRef = useRef<Application>();
   const previousPointRef = useRef<Point>();
   const canvas = canvasRef ? { canvas: canvasRef } : {};
+  const renderer = rendererRef ? { renderer: rendererRef } : {};
 
   const [brush, setBrush] = useState<number>(6);
   const [color, setColor] = useState<string>("ffffff");
   const [isDrawing, setIsDrawing] = useState(false);
 
-  const [layer, setLayer] = useState<number>(0);
-
-  useMouseMove(
-    canvasRef.current,
-    useCallback(
-      (event: MouseEvent) => {
-        if (isDrawing && rendererRef.current) {
-          const to = new PIXI.Point(event.offsetX, event.offsetY);
-
-          const layers = rendererRef.current.stage.getChildAt(0) as Container;
-          const graphics = layers.getChildAt(layer) as Graphics;
-
-          graphics.beginFill(parseInt(color, 16));
-
-          const draw = (x: number, y: number) =>
-            graphics.drawCircle(x, y, brush);
-
-          if (previousPointRef.current) {
-            interpolateDirect(draw, previousPointRef.current, to, 64);
-          } else {
-            draw(to.x, to.y);
-          }
-
-          graphics.endFill();
-
-          previousPointRef.current = to;
-        }
-      },
-      [isDrawing, color, brush]
-    )
-  );
+  const [layer, setLayer] = useState<number | null>(null);
 
   useEffect(() => {
     rendererRef.current = new PIXI.Application({
       width: WIDTH,
       height: HEIGHT,
       view: canvasRef.current,
-      antialias: false,
+      antialias: true,
     });
 
     if (!rendererRef.current) {
@@ -111,6 +72,8 @@ export function DrawingProvider(props: IDrawingProviderProps) {
 
     rendererRef.current.stage.addChildAt(layers, 0);
 
+    setLayer(0);
+
     return () => {
       if (rendererRef.current) {
         rendererRef.current.destroy();
@@ -118,18 +81,56 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     };
   }, []);
 
-  const startDrawing = () => {
-    setIsDrawing(true);
-  };
+  useMouseMove(
+    canvasRef.current,
+    useCallback(
+      (event: MouseEvent) => {
+        if (isDrawing && rendererRef.current) {
+          const to = new PIXI.Point(event.offsetX, event.offsetY);
+
+          const layers = rendererRef.current.stage.getChildAt(0) as Container;
+          const graphics = layers.getChildAt(layer || 0) as Graphics;
+
+          graphics.beginFill(parseInt(color, 16));
+
+          const draw = (x: number, y: number) =>
+            graphics.drawCircle(x, y, brush);
+
+          if (previousPointRef.current) {
+            interpolateDirect(draw, previousPointRef.current, to, 16);
+          } else {
+            draw(to.x, to.y);
+          }
+
+          graphics.endFill();
+
+          previousPointRef.current = to;
+        }
+      },
+      [isDrawing, color, brush, layer]
+    )
+  );
+
+  const startDrawing = () => setIsDrawing(true);
 
   const stopDrawing = () => {
     previousPointRef.current = undefined;
     setIsDrawing(false);
   };
 
+  const addLayer = () => {
+    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+
+    const next = layer ? layer + 1 : 0;
+    rendererRef.current?.stage.addChildAt(layers, next);
+
+    setLayer(next);
+  };
+
   return (
     <DrawingContext.Provider
       value={{
+        ...renderer,
         ...canvas,
         brush,
         setBrush,
@@ -137,6 +138,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
         setColor,
         startDrawing,
         stopDrawing,
+        addLayer,
       }}
     >
       <script src="https://pixijs.download/release/pixi.js" />
@@ -184,5 +186,20 @@ export function useDrawing() {
   return {
     startDrawing: context.startDrawing,
     stopDrawing: context.stopDrawing,
+  };
+}
+
+export function useLayers() {
+  const context = useContext(DrawingContext);
+
+  if (!context) throw new Error("Must useDrawing inside of a DrawingProvider");
+
+  const container = context.renderer?.current?.stage.getChildAt(0) as Container;
+
+  const layers = container?.children ?? [];
+
+  return {
+    layers,
+    add: context.addLayer,
   };
 }

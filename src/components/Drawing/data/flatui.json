@@ -1,0 +1,103 @@
+[
+  {
+    "id": "turquoise",
+    "value": "1abc9c",
+    "label": "Turquoise"
+  },
+  {
+    "id": "green-sea",
+    "value": "16a085",
+    "label": "Green Sea"
+  },
+  {
+    "id": "emerald",
+    "value": "2ecc71",
+    "label": "Emerald"
+  },
+  {
+    "id": "nephritis",
+    "value": "27ae60",
+    "label": "Nephritis"
+  },
+  {
+    "id": "peter-river",
+    "value": "3498db",
+    "label": "Peter River"
+  },
+  {
+    "id": "belize-hole",
+    "value": "2980b9",
+    "label": "Belize Hole"
+  },
+  {
+    "id": "amethyst",
+    "value": "9b59b6",
+    "label": "Amethyst"
+  },
+  {
+    "id": "wisteria",
+    "value": "8e44ad",
+    "label": "Wisteria"
+  },
+  {
+    "id": "wet-asphalt",
+    "value": "34495e",
+    "label": "Wet Asphalt"
+  },
+  {
+    "id": "midnight-blue",
+    "value": "2c3e50",
+    "label": "Midnight Blue"
+  },
+  {
+    "id": "sun-flower",
+    "value": "f1c40f",
+    "label": "Sun Flower"
+  },
+  {
+    "id": "orange",
+    "value": "f39c12",
+    "label": "Orange"
+  },
+  {
+    "id": "carrot",
+    "value": "e67e22",
+    "label": "Carrot"
+  },
+  {
+    "id": "pumpkin",
+    "value": "d35400",
+    "label": "Pumpkin"
+  },
+  {
+    "id": "alizarin",
+    "value": "e74c3c",
+    "label": "Alizarin"
+  },
+  {
+    "id": "pomegranate",
+    "value": "c0392b",
+    "label": "Pomegranate"
+  },
+  {
+    "id": "clouds",
+    "value": "ecf0f1",
+    "label": "Clouds"
+  },
+
+  {
+    "id": "silver",
+    "value": "bdc3c7",
+    "label": "Silver"
+  },
+  {
+    "id": "concrete",
+    "value": "95a5a6",
+    "label": "Concrete"
+  },
+  {
+    "id": "asbestos",
+    "value": "7f8c8d",
+    "label": "Asbestos"
+  }
+]
