@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { Application, Point } from "pixi.js";
 
-import { interpolate } from "~/utils/rendering";
+import { interpolateDirect } from "~/utils/rendering";
 
 const colors = [
   "1abc9c",
@@ -16,6 +16,8 @@ const colors = [
   "95a5a6",
 ];
 
+const sizes = Array.from(new Array(10)).map((_, index) => index + 1);
+
 export default function Drawing() {
   const canvasRef = useRef<HTMLCanvasElement>();
   const pixiRef = useRef<Application>();
@@ -23,13 +25,14 @@ export default function Drawing() {
 
   const [drawing, setDrawing] = useState(false);
   const [color, setColor] = useState(colors[0]);
+  const [size, setSize] = useState(sizes[3]);
 
   useEffect(() => {
     pixiRef.current = new PIXI.Application({
       width: 512,
       height: 512,
       view: canvasRef.current,
-      antialias: false,
+      antialias: true,
     });
 
     return () => {
@@ -48,15 +51,12 @@ export default function Drawing() {
 
         graphics.beginFill(`0x${color}`);
 
-        if (previousPaintRef.current) {
-          const points = interpolate(previousPaintRef.current, to);
-          const length = points.length;
+        const draw = (x: number, y: number) => graphics.drawCircle(x, y, size);
 
-          for (let i = length - 1; i >= 0; i -= 1) {
-            graphics.drawCircle(points[i].x, points[i].y, 10);
-          }
+        if (previousPaintRef.current) {
+          interpolateDirect(draw, previousPaintRef.current, to, 16);
         } else {
-          graphics.drawCircle(to.x, to.y, 10);
+          draw(to.x, to.y);
         }
 
         graphics.endFill();
@@ -127,6 +127,25 @@ export default function Drawing() {
             }}
             onClick={() => setColor(c)}
           />
+        ))}
+      </div>
+      <div style={{ display: "flex" }}>
+        {sizes.map((s) => (
+          <div
+            key={s}
+            style={{
+              width: "32px",
+              height: "32px",
+              backgroundColor: `#${s}`,
+              borderBottom: s === size ? "4px solid black" : "0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onClick={() => setSize(s)}
+          >
+            {s}
+          </div>
         ))}
       </div>
     </>

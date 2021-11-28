@@ -14,3 +14,13 @@ export const interpolate = (from, to, detail = 3) => {
 
   return points;
 };
+
+export const interpolateDirect = (cb, from, to, detail = 3) => {
+  for (let i = 0; i <= detail; i++) {
+    cb(
+      from.x + (to.x - from.x) * (i / detail),
+      from.y + (to.y - from.y) * (i / detail),
+      10
+    );
+  }
+};
