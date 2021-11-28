@@ -21,17 +21,29 @@ interface IDrawingContext {
   setColor: React.Dispatch<React.SetStateAction<string>>;
   startDrawing: () => void;
   stopDrawing: () => void;
+  layer: number;
   addLayer: () => void;
+  removeLayer: (index: number) => void;
+  selectLayer: (index: number) => void;
+  highlightLayer: (index: number) => void;
+  unhighlightLayer: (index: number) => void;
 }
+
+const nop = (v?: any) => null;
 
 const DrawingContext = React.createContext<IDrawingContext>({
   brush: null,
-  setBrush: (value: React.SetStateAction<number>) => null,
+  setBrush: nop,
   color: null,
-  setColor: (value: React.SetStateAction<string>) => null,
-  startDrawing: () => null,
-  stopDrawing: () => null,
+  setColor: nop,
+  startDrawing: nop,
+  stopDrawing: nop,
+  layer: 0,
   addLayer: () => null,
+  removeLayer: nop,
+  selectLayer: nop,
+  highlightLayer: nop,
+  unhighlightLayer: nop,
 });
 
 interface IDrawingProviderProps {
@@ -49,7 +61,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   const [color, setColor] = useState<string>("ffffff");
   const [isDrawing, setIsDrawing] = useState(false);
 
-  const [layer, setLayer] = useState<number | null>(null);
+  const [layer, setLayer] = useState<number>(-1);
 
   useEffect(() => {
     rendererRef.current = new PIXI.Application({
@@ -121,10 +133,35 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   const addLayer = () => {
     const layers = rendererRef.current?.stage.getChildAt(0) as Container;
 
-    const next = layer ? layer + 1 : 0;
-    rendererRef.current?.stage.addChildAt(layers, next);
+    const next = (layer || 0) + 1;
+
+    layers.addChildAt(new PIXI.Graphics(), next);
 
     setLayer(next);
+  };
+
+  const removeLayer = (index) => {
+    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+
+    const selected = index === layer ? layer - 1 : layer;
+
+    layers.removeChildAt(index);
+
+    setLayer(selected > 0 ? selected : 0);
+  };
+
+  const highlightLayer = (index) => {
+    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const current = layers.getChildAt(index) as Graphics;
+
+    current.tint = 0xdddddd;
+  };
+
+  const unhighlightLayer = (index) => {
+    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const current = layers.getChildAt(index) as Graphics;
+
+    current.tint = 0xffffff;
   };
 
   return (
@@ -138,10 +175,14 @@ export function DrawingProvider(props: IDrawingProviderProps) {
         setColor,
         startDrawing,
         stopDrawing,
+        layer,
         addLayer,
+        removeLayer,
+        selectLayer: setLayer,
+        highlightLayer,
+        unhighlightLayer,
       }}
     >
-      <script src="https://pixijs.download/release/pixi.js" />
       {props.children}
     </DrawingContext.Provider>
   );
@@ -199,7 +240,10 @@ export function useLayers() {
   const layers = container?.children ?? [];
 
   return {
+    current: context.layer,
     layers,
     add: context.addLayer,
+    select: context.selectLayer,
+    hover: [context.highlightLayer, context.unhighlightLayer],
   };
 }

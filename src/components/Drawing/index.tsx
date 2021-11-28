@@ -9,12 +9,12 @@ export default function Drawing() {
   return (
     <DrawingProvider>
       <div className="flex">
-        <div>
+        <div className="" style={{ width: "540px", height: "675px" }}>
           <Canvas />
         </div>
         <Layers />
       </div>
-      <div className="border-t">
+      <div className="border-0">
         <Swatch />
       </div>
       {/* <Brush /> */}

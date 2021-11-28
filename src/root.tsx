@@ -47,6 +47,7 @@ function Document({
         {children}
         <RouteChangeAnnouncement />
         <ScrollRestoration />
+        <script src="https://pixijs.download/release/pixi.js" />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>

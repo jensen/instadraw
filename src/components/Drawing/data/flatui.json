@@ -99,5 +99,10 @@
     "id": "asbestos",
     "value": "7f8c8d",
     "label": "Asbestos"
+  },
+  {
+    "id": "white",
+    "value": "ffffff",
+    "label": "White"
   }
 ]

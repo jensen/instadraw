@@ -1,22 +1,22 @@
 [
   {
     "id": "sap-green",
-    "value": "0A3410",
+    "value": "0a3410",
     "label": "Sap Green"
   },
   {
     "id": "alizarin-crimson",
-    "value": "4E1500",
+    "value": "4e1500",
     "label": "Alizarin Crimson"
   },
   {
     "id": "van-dyke-brown",
-    "value": "221B15",
+    "value": "221b15",
     "label": "Van Dyke Brown"
   },
   {
     "id": "dark-sienna",
-    "value": "5F2E1F",
+    "value": "5f2e1f",
     "label": "Dark Sienna"
   },
   {
@@ -26,43 +26,43 @@
   },
   {
     "id": "prussian-blue",
-    "value": "021E44",
+    "value": "021e44",
     "label": "Prussian Blue"
   },
   {
     "id": "phthalo-blue",
-    "value": "0C0040",
+    "value": "0c0040",
     "label": "Phthalo Blue"
   },
   {
     "id": "phthalo-green",
-    "value": "102E3C",
+    "value": "102e3c",
     "label": "Phthalo Green"
   },
   {
     "id": "cadmium-yellow",
-    "value": "FFEC00",
+    "value": "ffec00",
     "label": "Cadmium Yellow"
   },
 
   {
     "id": "yellow-ochre",
-    "value": "C79B00",
+    "value": "c79b00",
     "label": "Yellow Ochre"
   },
   {
     "id": "yellow",
-    "value": "FFB800",
+    "value": "ffb800",
     "label": "Yellow"
   },
   {
     "id": "bright-red",
-    "value": "DB0000",
+    "value": "db0000",
     "label": "Bright Red"
   },
   {
     "id": "titanium-white",
-    "value": "FFFFFF",
+    "value": "ffffff",
     "label": "White"
   }
 ]

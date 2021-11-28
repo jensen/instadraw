@@ -1,4 +1,5 @@
-import { useBrush, useColor } from "./context";
+import { useColor } from "./context";
+import cx from "classnames";
 
 import bobross from "./data/bobross.json";
 import flatui from "./data/flatui.json";
@@ -12,23 +13,24 @@ function Color(props: ISizeProps) {
 
   return (
     <div
-      className="rounded-full w-6 h-6"
+      className={cx("w-6 h-6 border-black", {
+        "border-4": active === true,
+        "border-0": active === false,
+      })}
       style={{ backgroundColor: `#${props.color}` }}
       onClick={select}
-    >
-      &nbsp;
-    </div>
+    />
   );
 }
 
-export default function Swatch(props) {
+interface ISwatchProps {}
+
+export default function Swatch(props: ISwatchProps) {
   return (
-    <div>
-      <div className="flex space-x-2 px-4 py-2">
-        {bobross.map(({ id, value }) => (
-          <Color key={id} color={value} />
-        ))}
-      </div>
+    <div className="flex space-x-0">
+      {flatui.map(({ id, value }) => (
+        <Color key={id} color={value} />
+      ))}
     </div>
   );
 }
