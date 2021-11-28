@@ -1,0 +1,68 @@
+[
+  {
+    "id": "sap-green",
+    "value": "0A3410",
+    "label": "Sap Green"
+  },
+  {
+    "id": "alizarin-crimson",
+    "value": "4E1500",
+    "label": "Alizarin Crimson"
+  },
+  {
+    "id": "van-dyke-brown",
+    "value": "221B15",
+    "label": "Van Dyke Brown"
+  },
+  {
+    "id": "dark-sienna",
+    "value": "5F2E1F",
+    "label": "Dark Sienna"
+  },
+  {
+    "id": "midnight-black",
+    "value": "000000",
+    "label": "Midnight Black"
+  },
+  {
+    "id": "prussian-blue",
+    "value": "021E44",
+    "label": "Prussian Blue"
+  },
+  {
+    "id": "phthalo-blue",
+    "value": "0C0040",
+    "label": "Phthalo Blue"
+  },
+  {
+    "id": "phthalo-green",
+    "value": "102E3C",
+    "label": "Phthalo Green"
+  },
+  {
+    "id": "cadmium-yellow",
+    "value": "FFEC00",
+    "label": "Cadmium Yellow"
+  },
+
+  {
+    "id": "yellow-ochre",
+    "value": "C79B00",
+    "label": "Yellow Ochre"
+  },
+  {
+    "id": "yellow",
+    "value": "FFB800",
+    "label": "Yellow"
+  },
+  {
+    "id": "bright-red",
+    "value": "DB0000",
+    "label": "Bright Red"
+  },
+  {
+    "id": "titanium-white",
+    "value": "FFFFFF",
+    "label": "White"
+  }
+]

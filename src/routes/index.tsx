@@ -28,10 +28,9 @@ interface IViewProps {
 
 export function View(props: IViewProps) {
   return (
-    <>
-      <Link to="/">{props.data.message}</Link>
+    <div className="h-full flex flex-col justify-center items-center">
       <Drawing />
-    </>
+    </div>
   );
 }
 

@@ -23,7 +23,7 @@ describe("Index Route", () => {
         route: "/",
       });
 
-      expect(screen.getByText("Basic Loader")).toBeInTheDocument();
+      expect(screen.getByText("")).toBeInTheDocument();
     });
   });
 });
