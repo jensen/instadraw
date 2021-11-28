@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import type { Application, Point } from "pixi.js";
+
+import { interpolate } from "~/utils/rendering";
 
 const colors = [
   "1abc9c",
@@ -15,8 +18,8 @@ const colors = [
 
 export default function Drawing() {
   const canvasRef = useRef<HTMLCanvasElement>();
-  const pixiRef = useRef();
-  const previousPaintRef = useRef<{ x: number; y: number } | null>(null);
+  const pixiRef = useRef<Application>();
+  const previousPaintRef = useRef<Point | null>(null);
 
   const [drawing, setDrawing] = useState(false);
   const [color, setColor] = useState(colors[0]);
@@ -26,7 +29,7 @@ export default function Drawing() {
       width: 512,
       height: 512,
       view: canvasRef.current,
-      antialias: true,
+      antialias: false,
     });
 
     return () => {
@@ -39,28 +42,28 @@ export default function Drawing() {
   useEffect(() => {
     const cb = (event: MouseEvent) => {
       if (drawing && pixiRef.current) {
+        const to = new PIXI.Point(event.offsetX, event.offsetY);
+
         const graphics = new PIXI.Graphics();
 
-        graphics.lineStyle(2, parseInt(color, 16), 1, 0.5, true);
+        graphics.beginFill(`0x${color}`);
 
         if (previousPaintRef.current) {
-          graphics.moveTo(
-            previousPaintRef.current.x,
-            previousPaintRef.current.y
-          );
-          graphics.lineTo(event.offsetX, event.offsetY);
+          const points = interpolate(previousPaintRef.current, to);
+          const length = points.length;
+
+          for (let i = length - 1; i >= 0; i -= 1) {
+            graphics.drawCircle(points[i].x, points[i].y, 10);
+          }
         } else {
-          graphics.moveTo(event.offsetX, event.offsetY);
+          graphics.drawCircle(to.x, to.y, 10);
         }
 
-        graphics.closePath();
-
-        previousPaintRef.current = {
-          x: event.offsetX,
-          y: event.offsetY,
-        };
+        graphics.endFill();
 
         pixiRef.current.stage.addChild(graphics);
+
+        previousPaintRef.current = to;
       }
     };
 
@@ -93,8 +96,8 @@ export default function Drawing() {
 
   React.useEffect(() => {
     const cb = (event: MouseEvent) => {
-      setDrawing(false);
       previousPaintRef.current = null;
+      setDrawing(false);
     };
 
     if (canvasRef.current) {

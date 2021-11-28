@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { View, loader } from "~/routes/index";
-import { renderWithRouter } from "../utils/render";
+import { renderWithRouter } from "../__utils__/render";
 
 describe("Index Route", () => {
   describe("loader", () => {
