@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import type { Application, Container, Point, Graphics } from "pixi.js";
+import { decode } from "base64-arraybuffer";
 import useMouseMove from "./hooks/useMouseMove";
 import { interpolateDirect } from "~/utils/rendering";
 
@@ -19,14 +20,15 @@ interface IDrawingContext {
   setBrush: React.Dispatch<React.SetStateAction<number>>;
   color: string | null;
   setColor: React.Dispatch<React.SetStateAction<string>>;
-  startDrawing: () => void;
-  stopDrawing: () => void;
+  startDrawing: (event: MouseEvent) => void;
+  stopDrawing: (event: MouseEvent) => void;
   layer: number;
   addLayer: () => void;
   removeLayer: (index: number) => void;
   selectLayer: (index: number) => void;
   highlightLayer: (index: number) => void;
   unhighlightLayer: (index: number) => void;
+  saveCanvas: () => ArrayBuffer;
 }
 
 const nop = (v?: any) => null;
@@ -44,14 +46,15 @@ const DrawingContext = React.createContext<IDrawingContext>({
   selectLayer: nop,
   highlightLayer: nop,
   unhighlightLayer: nop,
+  saveCanvas: nop,
 });
 
 const applicationConfig = {
   width: WIDTH,
   height: HEIGHT,
-  antialias: true,
+  antialias: false,
   backgroundColor: 0xffffff,
-  backgroundAlpha: 1,
+  backgroundAlpha: 0,
 };
 
 interface IDrawingProviderProps {
@@ -86,7 +89,10 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     layers.width = WIDTH;
     layers.height = HEIGHT;
 
-    layers.addChildAt(new PIXI.Graphics(), 0);
+    const graphics = new PIXI.Graphics();
+    graphics.name = `layer${new Date().getTime()}`;
+
+    layers.addChildAt(graphics, 0);
 
     rendererRef.current.stage.addChildAt(layers, 0);
 
@@ -115,7 +121,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
             graphics.drawCircle(x, y, brush);
 
           if (previousPointRef.current) {
-            interpolateDirect(draw, previousPointRef.current, to, 64);
+            interpolateDirect(draw, previousPointRef.current, to);
           } else {
             draw(to.x, to.y);
           }
@@ -129,9 +135,11 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     )
   );
 
-  const startDrawing = () => setIsDrawing(true);
+  const startDrawing = (event: MouseEvent) => {
+    setIsDrawing(true);
+  };
 
-  const stopDrawing = () => {
+  const stopDrawing = (event: MouseEvent) => {
     previousPointRef.current = undefined;
     setIsDrawing(false);
   };
@@ -141,7 +149,10 @@ export function DrawingProvider(props: IDrawingProviderProps) {
 
     const next = (layer || 0) + 1;
 
-    layers.addChildAt(new PIXI.Graphics(), next);
+    const graphics = new PIXI.Graphics();
+    graphics.name = `layer${new Date().getTime()}`;
+
+    layers.addChildAt(graphics, next);
 
     setLayer(next);
   };
@@ -170,6 +181,21 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     current.tint = 0xffffff;
   };
 
+  const saveCanvas = () => {
+    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+
+    const frame = new PIXI.Graphics();
+
+    frame.lineStyle(1, 0xe6e6e6);
+    frame.drawRect(0, 0, WIDTH, HEIGHT);
+
+    layers.addChild(frame);
+
+    const image = rendererRef.current?.renderer.plugins.extract.base64(layers);
+
+    return decode(image.replace(/^data:image\/\w+;base64,/, ""));
+  };
+
   return (
     <DrawingContext.Provider
       value={{
@@ -187,6 +213,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
         selectLayer: setLayer,
         highlightLayer,
         unhighlightLayer,
+        saveCanvas,
       }}
     >
       {props.children}
@@ -239,7 +266,7 @@ export function useDrawing() {
 export function useLayers() {
   const context = useContext(DrawingContext);
 
-  if (!context) throw new Error("Must useDrawing inside of a DrawingProvider");
+  if (!context) throw new Error("Must useLayers inside of a DrawingProvider");
 
   const container = context.renderer?.current?.stage.getChildAt(0) as Container;
 
@@ -251,5 +278,15 @@ export function useLayers() {
     add: context.addLayer,
     select: context.selectLayer,
     hover: [context.highlightLayer, context.unhighlightLayer],
+  };
+}
+
+export function useSaveLoad() {
+  const context = useContext(DrawingContext);
+
+  if (!context) throw new Error("Must useSaveLoad inside of a DrawingProvider");
+
+  return {
+    save: context.saveCanvas,
   };
 }

@@ -7,23 +7,49 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLoaderData,
   useLocation,
 } from "remix";
-import type { LinksFunction } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
 
 import globalStylesUrl from "~/styles/global.css";
+import SupabaseProvider from "./context/supabase";
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: globalStylesUrl }];
 };
 
-export default function App() {
+export let loader: LoaderFunction = () => {
+  return {
+    env: {
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+    },
+  };
+};
+
+export default function Application() {
+  const data = useLoaderData();
+
   return (
     <Document>
+      <Environment env={data.env} />
       <Layout>
-        <Outlet />
+        <SupabaseProvider>
+          <Outlet />
+        </SupabaseProvider>
       </Layout>
     </Document>
+  );
+}
+
+function Environment({ env }: { env: IEnvironment }) {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `window.env = ${JSON.stringify(env)}`,
+      }}
+    />
   );
 }
 

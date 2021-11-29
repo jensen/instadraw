@@ -4,7 +4,7 @@ import Drawing from "~/components/Drawing";
 export default function Post(props) {
   return (
     <article className="bg-gray-50">
-      <header className="h-16 border border-b-0 border-gray-300 rounded-t-sm flex items-center p-4">
+      <header className="h-16 border border-gray-300 rounded-t-sm flex items-center p-4">
         <div className="rounded-full h-12 w-12 border-2 bg-gray-200  flex justify-center items-center">
           <div className=" rounded-full h-10 w-10 border-2 bg-gray-500"></div>
         </div>

@@ -1,9 +1,11 @@
-import { DrawingProvider } from "./context";
+import { useEffect } from "react";
+
+import { useSupabase } from "~/context/supabase";
 
 import Canvas from "./Canvas";
 import Swatch from "./Swatch";
-import Brush from "./Brush";
 import Layers from "./Layers";
+import { DrawingProvider } from "./context";
 
 export default function Drawing() {
   return (
@@ -14,7 +16,7 @@ export default function Drawing() {
         </div>
         <Layers />
       </div>
-      <div className="border-0">
+      <div className="border-t border-0">
         <Swatch />
       </div>
       {/* <Brush /> */}
