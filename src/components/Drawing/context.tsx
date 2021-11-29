@@ -191,9 +191,11 @@ export function DrawingProvider(props: IDrawingProviderProps) {
 
     layers.addChild(frame);
 
-    const image = rendererRef.current?.renderer.plugins.extract.base64(layers);
-
-    return decode(image.replace(/^data:image\/\w+;base64,/, ""));
+    return decode(
+      rendererRef.current?.renderer.plugins.extract
+        .base64(layers)
+        .replace(/^data:image\/\w+;base64,/, "")
+    );
   };
 
   return (

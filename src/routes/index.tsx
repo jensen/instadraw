@@ -30,6 +30,9 @@ export function View(props: IViewProps) {
   return (
     <div className="flex flex-col items-center space-y-8">
       <Post />
+      <form action="/auth" method="post">
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 }

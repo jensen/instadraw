@@ -49,13 +49,7 @@ export default function Layers(props) {
           <SaveIcon
             size={24}
             color="white"
-            onClick={() =>
-              supabase?.storage
-                .from("layers")
-                .upload(`image-${new Date().getTime()}`, save(), {
-                  contentType: "image/png",
-                })
-            }
+            onClick={() => supabase.addLayer({ data: save(), post_id: "test" })}
           />
         </div>
       </div>

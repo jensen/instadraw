@@ -61,7 +61,7 @@ create table layers (
   image text not null,
   
   user_id uuid default auth.uid() not null,
-  constraint user_id foreign key(user_id) references profiles(id) on delete cascade 
+  constraint user_id foreign key(user_id) references profiles(id) on delete cascade ,
 
   post_id uuid not null,
   constraint post_id foreign key(post_id) references posts(id) on delete cascade 
@@ -75,7 +75,7 @@ create table comments (
   content text not null,
   
   user_id uuid default auth.uid() not null,
-  constraint user_id foreign key(user_id) references profiles(id) on delete cascade 
+  constraint user_id foreign key(user_id) references profiles(id) on delete cascade,
 
   post_id uuid not null,
   constraint post_id foreign key(post_id) references posts(id) on delete cascade 

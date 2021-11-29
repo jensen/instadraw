@@ -1,10 +1,7 @@
-import { useEffect } from "react";
-
-import { useSupabase } from "~/context/supabase";
-
 import Canvas from "./Canvas";
 import Swatch from "./Swatch";
 import Layers from "./Layers";
+
 import { DrawingProvider } from "./context";
 
 export default function Drawing() {
