@@ -16,7 +16,7 @@ function Full(props) {
 
   return (
     <div className="font-light">
-      <h3>
+      <h3 className="mb-2">
         Edited by <span className="font-semibold">{layer.user.name}</span> and{" "}
         <span className="font-semibold">others</span>
       </h3>
@@ -37,7 +37,7 @@ function Preview(props) {
 
   return (
     <div className="font-light">
-      <h3>
+      <h3 className="mb-2">
         Edited by <span className="font-semibold">jensen</span> and{" "}
         <span className="font-semibold">others</span>
       </h3>
@@ -91,16 +91,16 @@ export default function Post(props: IPostProps) {
       </main>
       {props.edit === false && (
         <>
-          <aside className="border-l border-r p-4">
+          <aside className="border-l border-r hover:shadow-md hover:bg-gray-100">
             <Form
               method="post"
               action={`/posts/${props.post.id}/comments`}
               onClick={withStopPropagation()}
             >
-              <section className="flex">
+              <section className="flex pr-4">
                 <input
                   name="content"
-                  className="w-full bg-gray-50 text-md focus:outline-none"
+                  className="w-full p-4 bg-transparent text-md focus:outline-none"
                   placeholder="Add a comment..."
                 />
                 <button type="submit">Post</button>

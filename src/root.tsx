@@ -18,7 +18,13 @@ import SupabaseProvider from "~/context/supabase";
 import DiscordLoginButton from "~/components/DiscordLoginButton";
 
 export let links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: globalStylesUrl }];
+  return [
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap",
+    },
+    { rel: "stylesheet", href: globalStylesUrl },
+  ];
 };
 
 export let loader: LoaderFunction = () => {
@@ -87,8 +93,8 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
   return (
     <section className="h-full flex flex-col">
       <header className="p-4 bg-white border-b flex justify-between">
-        <h3 className="font-bold text-3xl">
-          <Link to="/">picstagram</Link>
+        <h3 className="text-5xl tracking-tight leading-tight brand bg-gradient-to-l from-purple-500 via-pink-500 to-red-500 text-transparent bg-clip-text">
+          <Link to="/">Instadraw</Link>
         </h3>
         <div>
           <DiscordLoginButton />
@@ -100,7 +106,15 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
       </header>
       <main className="flex-1 relative">
         <section className="h-full w-full p-4 absolute overflow-x-hidden overflow-y-scroll">
-          <div className="flex justify-center">{children}</div>
+          <div className="flex flex-col justify-center">
+            {children}
+            <p className="flex justify-center pt-8 pb-4 text-gray-600">
+              Made by{" "}
+              <span className="ml-1 font-bold">
+                <a href="https://github.com/jensen/">@jensen</a>
+              </span>
+            </p>
+          </div>
         </section>
       </main>
     </section>

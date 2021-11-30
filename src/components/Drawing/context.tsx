@@ -57,7 +57,7 @@ const DrawingContext = React.createContext<IDrawingContext>({
 const applicationConfig = {
   width: WIDTH,
   height: HEIGHT,
-  antialias: false,
+  antialias: true,
   backgroundColor: 0xffffff,
   backgroundAlpha: 0,
 };
