@@ -29,7 +29,7 @@ export default function Layers(props: ILayersProps) {
   return (
     <div className="w-full flex flex-col justify-between border border-l-0 bg-gray-100">
       <ul className="w-full flex flex-col-reverse p-2">
-        {layers.map((layer, index) => (
+        {/* {layers.map((layer, index) => (
           <li
             key={layer.name}
             className={cx(
@@ -45,11 +45,11 @@ export default function Layers(props: ILayersProps) {
             {true ? <EyeOpenIcon size={16} /> : <EyeClosedIcon size={16} />}
             <LayerMinusIcon size={16} />
           </li>
-        ))}
+        ))} */}
       </ul>
-      <div className="w-24 flex p-2">
+      <div className="flex p-2">
         <div className="w-full flex justify-between rounded-md border p-2 cursor-pointer bg-gray-800 hover:bg-gray-900 hover:shadow-md">
-          <LayerPlusIcon size={24} color="white" onClick={add} />
+          {/* <LayerPlusIcon size={24} color="white" onClick={add} /> */}
           {busy === false && (
             <SaveIcon
               size={24}

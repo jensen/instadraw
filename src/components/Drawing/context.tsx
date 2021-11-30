@@ -18,6 +18,12 @@ const ZINDEX = {
   BACKGROUND: 0,
 };
 
+let PIXI: any;
+
+if (typeof window !== "undefined") {
+  PIXI = (window as WindowWithPIXI).PIXI;
+}
+
 interface IDrawingContext {
   renderer?: React.MutableRefObject<Application | undefined>;
   canvas?: React.MutableRefObject<HTMLCanvasElement | undefined>;

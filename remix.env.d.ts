@@ -10,6 +10,11 @@ type EnvironemntVars =
   | "PROVIDER_DISCORD_CLIENT_ID"
   | "PROVIDER_DISCORD_SECRET";
 
+type WindowWithPIXI = Window &
+  typeof globalThis & {
+    PIXI: any;
+  };
+
 type WindowWithEnvironment = Window &
   typeof globalThis & {
     env: Record<EnvironemntVars, "string">;
