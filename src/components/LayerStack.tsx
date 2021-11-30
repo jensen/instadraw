@@ -7,7 +7,7 @@ export default function LayerStack(props) {
       style={{ width: `${WIDTH}px`, height: `${HEIGHT}px` }}
     >
       {props.layers.map((layer) => (
-        <img className="absolute" src={layer.image} />
+        <img key={layer.id} className="absolute" src={layer.image} />
       ))}
     </div>
   );

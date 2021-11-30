@@ -22,7 +22,7 @@ function Full(props) {
       </h3>
       <ul>
         {props.comments.map((comment) => (
-          <li>
+          <li key={comment.id}>
             <span className="font-semibold mr-1">{comment.user.name}</span>
             <span className="text-sm">{comment.content}</span>
           </li>
@@ -48,7 +48,7 @@ function Preview(props) {
       )}
       <ul>
         {recent.map((comment) => (
-          <li>
+          <li key={comment.id}>
             <span className="font-semibold mr-1">{comment.user.name}</span>
             <span className="text-sm">{comment.content}</span>
           </li>

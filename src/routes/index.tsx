@@ -45,7 +45,7 @@ export function View(props: IIndexViewProps) {
   return (
     <div className="space-y-8">
       {props.posts.map((post) => (
-        <div onClick={() => navigate(`posts/${post.id}`)}>
+        <div key={post.id} onClick={() => navigate(`posts/${post.id}`)}>
           <Post post={post} minimal>
             <LayerStack layers={post.layers} />
           </Post>
