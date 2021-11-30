@@ -43,7 +43,7 @@ export function View(props: IIndexViewProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center space-y-8">
+    <div className="space-y-8">
       {props.posts.map((post) => (
         <div onClick={() => navigate(`posts/${post.id}`)}>
           <Post post={post} minimal>

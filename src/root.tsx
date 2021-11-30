@@ -105,10 +105,10 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
         </div>
       </header>
       <main className="flex-1 relative">
-        <section className="h-full w-full p-4 absolute overflow-x-hidden overflow-y-scroll">
-          <div className="flex flex-col justify-center">
+        <section className="h-full w-full  flex flex-col items-center p-4 absolute overflow-x-hidden overflow-y-scroll">
+          <div className="w-min">
             {children}
-            <p className="flex justify-center pt-8 pb-4 text-gray-600">
+            <p className="pt-8 pb-4 text-gray-600 text-center">
               Made by{" "}
               <span className="ml-1 font-bold">
                 <a href="https://github.com/jensen/">@jensen</a>
