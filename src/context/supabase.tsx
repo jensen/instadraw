@@ -10,14 +10,18 @@ interface ISupabaseContext {
   setBusy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SupabaseContext = React.createContext<ISupabaseContext | null>(null);
+const SupabaseContext = React.createContext<ISupabaseContext>({
+  supabase: null,
+  busy: false,
+  setBusy: () => null,
+});
 
 interface ISupabaseProviderProps {
   children: React.ReactNode;
 }
 
 export default function SupabaseProvider(props: ISupabaseProviderProps) {
-  const [supabase, setSupabase] = useState<SupabaseClient>(null);
+  const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -31,8 +35,18 @@ export default function SupabaseProvider(props: ISupabaseProviderProps) {
   );
 }
 
+function useSupabaseContext() {
+  const context = useContext(SupabaseContext);
+
+  if (!context) {
+    throw new Error("Must useSupabase within a SupabaseProvider");
+  }
+
+  return context;
+}
+
 export function useSupabase() {
-  const { supabase, busy, setBusy } = useContext(SupabaseContext);
+  const { supabase, busy, setBusy } = useSupabaseContext();
   const submit = useSubmit();
 
   const actions = useMemo(
@@ -69,7 +83,27 @@ export function useSupabase() {
   );
 
   return {
+    supabase,
     busy,
     actions,
   };
+}
+
+export function useSupabaseAuthListener() {
+  const { supabase } = useSupabaseContext();
+  const submit = useSubmit();
+
+  useEffect(() => {
+    const { data: authListener } = supabase?.auth.onAuthStateChange(
+      (event, session) => {
+        const body = { event, token: session?.access_token ?? "" };
+
+        submit(body, { method: "post" });
+      }
+    );
+
+    return () => {
+      authListener?.unsubscribe();
+    };
+  }, []);
 }

@@ -1,9 +1,7 @@
-import { redirect } from "remix";
-import supabase from "~/services";
-
-export let action = ({}) => {
-  const url = supabase.auth.api.getUrlForProvider("discord", {
-    redirectTo: "http://localhost:3000/auth/callback",
-  });
-  return redirect(url);
-};
+export default function Auth() {
+  return (
+    <div className="px-8 py-2 rounded-full flex justify-center items-center bg-green-400 space-x-4">
+      <span className="text-white">Authenticating</span>
+    </div>
+  );
+}

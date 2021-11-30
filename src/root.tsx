@@ -10,12 +10,15 @@ import {
   useCatch,
   useLoaderData,
   useLocation,
+  redirect,
 } from "remix";
-import type { LinksFunction, LoaderFunction } from "remix";
+import type { LinksFunction, ActionFunction, LoaderFunction } from "remix";
 
 import globalStylesUrl from "~/styles/global.css";
-import SupabaseProvider from "~/context/supabase";
+import SupabaseProvider, { useSupabaseAuthListener } from "~/context/supabase";
 import DiscordLoginButton from "~/components/DiscordLoginButton";
+
+import create from "~/services/cookie.server";
 
 export let links: LinksFunction = () => {
   return [
@@ -27,6 +30,34 @@ export let links: LinksFunction = () => {
   ];
 };
 
+export let action: ActionFunction = async ({ request }) => {
+  const { getSession, commitSession, destroySession } = create();
+
+  const [body, session] = await Promise.all([
+    request.formData(),
+    getSession(request.headers.get("Cookie")),
+  ]);
+
+  const event = body.get("event");
+  const token = body.get("token");
+
+  let cookie;
+
+  if (event === "SIGNED_IN") {
+    session.set("token", token);
+
+    cookie = await commitSession(session);
+  } else {
+    cookie = await destroySession(session);
+  }
+
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": cookie,
+    },
+  });
+};
+
 export let loader: LoaderFunction = () => {
   return {
     env: {
@@ -36,17 +67,23 @@ export let loader: LoaderFunction = () => {
   };
 };
 
+function SupabaseListener() {
+  useSupabaseAuthListener();
+  return null;
+}
+
 export default function Application() {
   const data = useLoaderData();
 
   return (
     <Document>
       <Environment env={data.env} />
-      <Layout>
-        <SupabaseProvider>
+      <SupabaseProvider>
+        <SupabaseListener />
+        <Layout>
           <Outlet />
-        </SupabaseProvider>
-      </Layout>
+        </Layout>
+      </SupabaseProvider>
     </Document>
   );
 }
