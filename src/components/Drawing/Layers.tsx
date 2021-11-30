@@ -27,7 +27,7 @@ export default function Layers(props: ILayersProps) {
   const { busy, actions: supabase } = useSupabase();
 
   return (
-    <div className="w-full flex flex-col justify-between border-l bg-gray-100">
+    <div className="w-full flex flex-col justify-between border border-l-0 bg-gray-100">
       <ul className="w-full flex flex-col-reverse p-2">
         {layers.map((layer, index) => (
           <li

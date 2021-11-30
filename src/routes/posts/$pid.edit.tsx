@@ -1,9 +1,8 @@
-import type { ActionFunction, LoaderFunction } from "remix";
+import type { LoaderFunction } from "remix";
 import { useLoaderData, json, Link } from "remix";
 import { supabase } from "~/utils/auth";
 import Post from "~/components/Post";
 import Drawing from "~/components/Drawing";
-import { WIDTH, HEIGHT } from "~/components/Drawing/context";
 
 interface IPost {
   id: string;
@@ -19,7 +18,9 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const { data: post, error } = await db
     .from("posts")
-    .select("*, layers(*), user: user_id(*)")
+    .select(
+      "*, layers(*, user:user_id(*)), comments(*, user: user_id(*)), user: user_id(*)"
+    )
     .match({ id: params.pid })
     .maybeSingle();
 
@@ -41,11 +42,9 @@ interface IPostEditView {
 
 const View = (props: IPostEditView) => {
   return (
-    <>
-      <Post edit post={props.post}>
-        <Drawing layers={props.post.layers} />
-      </Post>
-    </>
+    <Post edit post={props.post}>
+      <Drawing layers={props.post.layers} />
+    </Post>
   );
 };
 

@@ -1,4 +1,5 @@
-import { MetaFunction, LoaderFunction, useLoaderData } from "remix";
+import type { MetaFunction, LoaderFunction } from "remix";
+import { useLoaderData, Link, useNavigate } from "remix";
 import { json } from "remix";
 import { supabase } from "~/utils/auth";
 
@@ -17,7 +18,9 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   const { data, error } = await db
     .from("posts")
-    .select("*, layers(*), user:user_id(*)");
+    .select(
+      "*, layers(*, user: user_id(*)), comments(*, user: user_id(*)), user:user_id(*)"
+    );
   const posts = data ? [...data] : [];
 
   return json({
@@ -37,19 +40,16 @@ interface IIndexViewProps {
 }
 
 export function View(props: IIndexViewProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col items-center space-y-8">
-      <form action="/auth" method="post">
-        <button type="submit">Login</button>
-      </form>
-      <form action="/posts" method="post">
-        <input name="title" />
-        <button type="submit">Create</button>
-      </form>
       {props.posts.map((post) => (
-        <Post post={post}>
-          <LayerStack layers={post.layers} />
-        </Post>
+        <div onClick={() => navigate(`posts/${post.id}`)}>
+          <Post post={post} minimal>
+            <LayerStack layers={post.layers} />
+          </Post>
+        </div>
       ))}
     </div>
   );

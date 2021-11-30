@@ -10,3 +10,7 @@ body {
 body {
   @apply bg-gray-100;
 }
+
+.discord-button {
+  background-color: #5865f2;
+}

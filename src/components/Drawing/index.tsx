@@ -13,13 +13,11 @@ export default function Drawing(props: IDrawingProps) {
   return (
     <DrawingProvider backgrounds={props.layers}>
       <div className="flex">
+        <Swatch />
         <div className="bg-white">
           <Canvas />
         </div>
         <Layers />
-      </div>
-      <div className="border-t border-0">
-        <Swatch />
       </div>
       {/* <Brush /> */}
     </DrawingProvider>

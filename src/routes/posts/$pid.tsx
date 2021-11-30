@@ -19,7 +19,9 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const { data: post, error } = await db
     .from("posts")
-    .select("*, layers(*), user: user_id(*)")
+    .select(
+      "*, layers(*, user: user_id(*)), comments(*, user: user_id(*)), user: user_id(*)"
+    )
     .match({ id: params.pid })
     .maybeSingle();
 

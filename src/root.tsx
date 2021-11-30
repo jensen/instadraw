@@ -14,7 +14,8 @@ import {
 import type { LinksFunction, LoaderFunction } from "remix";
 
 import globalStylesUrl from "~/styles/global.css";
-import SupabaseProvider from "./context/supabase";
+import SupabaseProvider from "~/context/supabase";
+import DiscordLoginButton from "~/components/DiscordLoginButton";
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: globalStylesUrl }];
@@ -85,10 +86,17 @@ function Document({
 function Layout({ children }: React.PropsWithChildren<{}>) {
   return (
     <section className="h-full flex flex-col">
-      <header className="p-4 bg-white border-b">
+      <header className="p-4 bg-white border-b flex justify-between">
         <h3 className="font-bold text-3xl">
           <Link to="/">picstagram</Link>
         </h3>
+        <div>
+          <DiscordLoginButton />
+          <form action="/posts" method="post">
+            <input name="title" />
+            <button type="submit">Create</button>
+          </form>
+        </div>
       </header>
       <main className="flex-1 relative">
         <section className="h-full w-full p-4 absolute overflow-x-hidden overflow-y-scroll">

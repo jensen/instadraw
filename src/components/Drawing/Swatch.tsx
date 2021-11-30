@@ -14,7 +14,7 @@ function Color(props: ISizeProps) {
   return (
     <div
       className={cx("w-6 h-6 border-black", {
-        "border-4": active === true,
+        "border-2": active === true,
         "border-0": active === false,
       })}
       style={{ backgroundColor: `#${props.color}` }}
@@ -27,7 +27,7 @@ interface ISwatchProps {}
 
 export default function Swatch(props: ISwatchProps) {
   return (
-    <div className="flex space-x-0">
+    <div className="flex flex-col border border-r-0">
       {flatui.map(({ id, value }) => (
         <Color key={id} color={value} />
       ))}
