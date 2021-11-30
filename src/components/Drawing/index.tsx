@@ -5,24 +5,16 @@ import Layers from "./Layers";
 import { DrawingProvider } from "./context";
 import { WIDTH, HEIGHT } from "~/components/Drawing/context";
 
-export default function Drawing(props) {
+interface IDrawingProps {
+  layers: { image: string }[];
+}
+
+export default function Drawing(props: IDrawingProps) {
   return (
-    <DrawingProvider>
+    <DrawingProvider backgrounds={props.layers}>
       <div className="flex">
         <div className="bg-white">
-          <div
-            className="relative"
-            style={{ width: `${WIDTH}px`, height: `${HEIGHT}px` }}
-          >
-            <div className="w-full h-full absolute">
-              {props.layers.map((layer) => (
-                <img className="absolute" src={layer.image} />
-              ))}
-            </div>
-            <div className="w-full h-full absolute">
-              <Canvas />
-            </div>
-          </div>
+          <Canvas />
         </div>
         <Layers />
       </div>

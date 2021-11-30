@@ -1,5 +1,5 @@
 import type { ActionFunction } from "remix";
-import { redirect } from "remix";
+import { redirect, json } from "remix";
 import { supabase } from "~/utils/auth";
 
 interface IPost {

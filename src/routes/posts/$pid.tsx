@@ -1,12 +1,13 @@
-import type { ActionFunction, LoaderFunction } from "remix";
-import { useLoaderData, json, Link } from "remix";
+import type { LoaderFunction } from "remix";
+import { useLoaderData, json } from "remix";
 import { supabase } from "~/utils/auth";
 import Post from "~/components/Post";
-import { WIDTH, HEIGHT } from "~/components/Drawing/context";
+import LayerStack from "~/components/LayerStack";
 
 interface IPost {
   id: string;
   title: string;
+  layers: any[];
 }
 
 type IPostLoaderData = {
@@ -18,7 +19,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const { data: post, error } = await db
     .from("posts")
-    .select("*, layers(*)")
+    .select("*, layers(*), user: user_id(*)")
     .match({ id: params.pid })
     .maybeSingle();
 
@@ -39,15 +40,10 @@ interface IPostView {
 }
 
 const View = (props: IPostView) => {
-  console.log(props.post.layers);
   return (
     <>
-      <Post>
-        <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px` }}>
-          {props.post.layers.map((layer) => (
-            <img className="absolute" src={layer.image} />
-          ))}
-        </div>
+      <Post post={props.post}>
+        <LayerStack layers={props.post.layers} />
       </Post>
     </>
   );

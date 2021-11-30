@@ -19,7 +19,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const { data: post, error } = await db
     .from("posts")
-    .select("*, layers(*)")
+    .select("*, layers(*), user: user_id(*)")
     .match({ id: params.pid })
     .maybeSingle();
 
@@ -41,11 +41,11 @@ interface IPostEditView {
 
 const View = (props: IPostEditView) => {
   return (
-    <div>
-      <Post edit>
+    <>
+      <Post edit post={props.post}>
         <Drawing layers={props.post.layers} />
       </Post>
-    </div>
+    </>
   );
 };
 

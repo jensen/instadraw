@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { useParams } from "remix";
 import { useSupabase } from "~/context/supabase";
 import { useLayers, useSaveLoad } from "./context";
 import {
@@ -12,6 +13,7 @@ import {
 interface ILayersProps {}
 
 export default function Layers(props: ILayersProps) {
+  const { pid } = useParams();
   const {
     current,
     layers,
@@ -55,7 +57,7 @@ export default function Layers(props: ILayersProps) {
               onClick={() =>
                 supabase.addLayer({
                   data: save(),
-                  post_id: "43c9fea5-62c6-4841-9a76-6492b6449778",
+                  post_id: pid || "",
                 })
               }
             />

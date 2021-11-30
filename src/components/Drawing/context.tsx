@@ -13,6 +13,11 @@ import { interpolateDirect } from "~/utils/rendering";
 export const WIDTH = 1080 / 2;
 export const HEIGHT = 1350 / 2;
 
+const ZINDEX = {
+  LAYER: 1,
+  BACKGROUND: 0,
+};
+
 interface IDrawingContext {
   renderer?: React.MutableRefObject<Application | undefined>;
   canvas?: React.MutableRefObject<HTMLCanvasElement | undefined>;
@@ -58,6 +63,7 @@ const applicationConfig = {
 };
 
 interface IDrawingProviderProps {
+  backgrounds: any[];
   children: React.ReactNode;
 }
 
@@ -84,6 +90,12 @@ export function DrawingProvider(props: IDrawingProviderProps) {
       throw new Error("No renderer created");
     }
 
+    const backgrounds = new PIXI.Container();
+
+    for (const bg of props.backgrounds) {
+      backgrounds.addChild(new PIXI.Sprite(PIXI.Texture.from(bg.image)));
+    }
+
     const layers = new PIXI.Container();
 
     layers.width = WIDTH;
@@ -94,7 +106,8 @@ export function DrawingProvider(props: IDrawingProviderProps) {
 
     layers.addChildAt(graphics, 0);
 
-    rendererRef.current.stage.addChildAt(layers, 0);
+    rendererRef.current.stage.addChildAt(backgrounds, ZINDEX.BACKGROUND);
+    rendererRef.current.stage.addChildAt(layers, ZINDEX.LAYER);
 
     setLayer(0);
 
@@ -112,7 +125,9 @@ export function DrawingProvider(props: IDrawingProviderProps) {
         if (isDrawing && rendererRef.current) {
           const to = new PIXI.Point(event.offsetX, event.offsetY);
 
-          const layers = rendererRef.current.stage.getChildAt(0) as Container;
+          const layers = rendererRef.current.stage.getChildAt(
+            ZINDEX.LAYER
+          ) as Container;
           const graphics = layers.getChildAt(layer || 0) as Graphics;
 
           graphics.beginFill(parseInt(color, 16));
@@ -145,7 +160,9 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   };
 
   const addLayer = () => {
-    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const layers = rendererRef.current?.stage.getChildAt(
+      ZINDEX.LAYER
+    ) as Container;
 
     const next = (layer || 0) + 1;
 
@@ -158,7 +175,9 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   };
 
   const removeLayer = (index) => {
-    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const layers = rendererRef.current?.stage.getChildAt(
+      ZINDEX.LAYER
+    ) as Container;
 
     const selected = index === layer ? layer - 1 : layer;
 
@@ -168,21 +187,27 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   };
 
   const highlightLayer = (index: number) => {
-    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const layers = rendererRef.current?.stage.getChildAt(
+      ZINDEX.LAYER
+    ) as Container;
     const current = layers.getChildAt(index) as Graphics;
 
     current.tint = 0xdddddd;
   };
 
   const unhighlightLayer = (index: number) => {
-    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const layers = rendererRef.current?.stage.getChildAt(
+      ZINDEX.LAYER
+    ) as Container;
     const current = layers.getChildAt(index) as Graphics;
 
     current.tint = 0xffffff;
   };
 
   const saveCanvas = () => {
-    const layers = rendererRef.current?.stage.getChildAt(0) as Container;
+    const layers = rendererRef.current?.stage.getChildAt(
+      ZINDEX.LAYER
+    ) as Container;
 
     const frame = new PIXI.Graphics();
 
@@ -270,7 +295,9 @@ export function useLayers() {
 
   if (!context) throw new Error("Must useLayers inside of a DrawingProvider");
 
-  const container = context.renderer?.current?.stage.getChildAt(0) as Container;
+  const container = context.renderer?.current?.stage.getChildAt(
+    ZINDEX.LAYER
+  ) as Container;
 
   const layers = container?.children ?? [];
 
