@@ -9,7 +9,9 @@ import {
   SaveIcon,
 } from "./icons";
 
-export default function Layers(props) {
+interface ILayersProps {}
+
+export default function Layers(props: ILayersProps) {
   const {
     current,
     layers,
@@ -20,7 +22,7 @@ export default function Layers(props) {
 
   const { save } = useSaveLoad();
 
-  const supabase = useSupabase();
+  const { busy, actions: supabase } = useSupabase();
 
   return (
     <div className="w-full flex flex-col justify-between border-l bg-gray-100">
@@ -46,11 +48,18 @@ export default function Layers(props) {
       <div className="w-24 flex p-2">
         <div className="w-full flex justify-between rounded-md border p-2 cursor-pointer bg-gray-800 hover:bg-gray-900 hover:shadow-md">
           <LayerPlusIcon size={24} color="white" onClick={add} />
-          <SaveIcon
-            size={24}
-            color="white"
-            onClick={() => supabase.addLayer({ data: save(), post_id: "test" })}
-          />
+          {busy === false && (
+            <SaveIcon
+              size={24}
+              color="white"
+              onClick={() =>
+                supabase.addLayer({
+                  data: save(),
+                  post_id: "43c9fea5-62c6-4841-9a76-6492b6449778",
+                })
+              }
+            />
+          )}
         </div>
       </div>
     </div>

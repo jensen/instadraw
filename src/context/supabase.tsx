@@ -1,31 +1,41 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { v4 as uuid } from "uuid";
+import { useSubmit } from "remix";
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import { supabase as supabaseClient } from "~/services";
 
-const SupabaseContext = React.createContext<SupabaseClient | null>(null);
+interface ISupabaseContext {
+  supabase: SupabaseClient | null;
+  busy: boolean;
+  setBusy: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SupabaseContext = React.createContext<ISupabaseContext | null>(null);
 
 interface ISupabaseProviderProps {
   children: React.ReactNode;
 }
 
 export default function SupabaseProvider(props: ISupabaseProviderProps) {
-  const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
+  const [supabase, setSupabase] = useState<SupabaseClient>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setSupabase(supabaseClient());
   }, []);
 
   return (
-    <SupabaseContext.Provider value={supabase}>
+    <SupabaseContext.Provider value={{ supabase, busy, setBusy }}>
       {supabase && props.children}
     </SupabaseContext.Provider>
   );
 }
 
 export function useSupabase() {
-  const supabase = useContext(SupabaseContext);
+  const { supabase, busy, setBusy } = useContext(SupabaseContext);
+  const submit = useSubmit();
 
-  return useMemo(
+  const actions = useMemo(
     () => ({
       addLayer: async ({
         data,
@@ -34,26 +44,32 @@ export function useSupabase() {
         data: ArrayBuffer;
         post_id: string;
       }) => {
-        const tmp = `image-${new Date().getTime()}.png`;
+        setBusy(true);
 
-        await supabase?.storage.from("layers").upload(tmp, data, {
-          contentType: "image/png",
-        });
-
-        const { publicURL } = await supabase?.storage
+        const name = `${uuid()}.png`;
+        const uploadResponse = await supabase?.storage
           .from("layers")
-          .getPublicUrl(tmp);
+          .upload(name, data, {
+            contentType: "image/png",
+          });
 
-        const { data: layer } = await supabase?.from("layers").insert({
-          image: publicURL,
-          post_id,
-        });
+        if (uploadResponse?.data) {
+          const body = new FormData();
 
-        await supabase?.storage
-          .from("avatars")
-          .move(tmp, `image-${data.id}.png`);
+          body.append("image", uploadResponse.data.Key);
+          body.append("post_id", post_id);
+
+          submit(body, { method: "post", action: `/posts/${post_id}/layers` });
+        }
+
+        setBusy(false);
       },
     }),
-    [supabase]
+    [supabase, submit]
   );
+
+  return {
+    busy,
+    actions,
+  };
 }

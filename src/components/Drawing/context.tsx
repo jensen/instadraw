@@ -10,8 +10,8 @@ import { decode } from "base64-arraybuffer";
 import useMouseMove from "./hooks/useMouseMove";
 import { interpolateDirect } from "~/utils/rendering";
 
-const WIDTH = 1080 / 2;
-const HEIGHT = 1350 / 2;
+export const WIDTH = 1080 / 2;
+export const HEIGHT = 1350 / 2;
 
 interface IDrawingContext {
   renderer?: React.MutableRefObject<Application | undefined>;

@@ -89,7 +89,7 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
       </header>
       <main className="flex-1 relative">
         <section className="h-full w-full p-4 absolute overflow-x-hidden overflow-y-scroll">
-          {children}
+          <div className="flex justify-center">{children}</div>
         </section>
       </main>
     </section>
