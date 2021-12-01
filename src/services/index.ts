@@ -33,5 +33,3 @@ export const supabase = (jwt?: string) => {
 
   return client;
 };
-
-export default supabase();
