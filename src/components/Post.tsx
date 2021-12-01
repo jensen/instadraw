@@ -3,14 +3,11 @@ import React from "react";
 import { format } from "date-fns";
 import { withStopPropagation } from "~/utils/events";
 
-interface IPostProps {
-  post: any;
-  children: React.ReactNode;
-  edit: boolean;
-  minimal: boolean;
+interface IEditedByProps {
+  user: any;
 }
 
-function EditedBy(props) {
+function EditedBy(props: IEditedByProps) {
   return (
     <h3 className="mb-2">
       Edited by <span className="font-semibold">{props.user.name}</span> and{" "}
@@ -19,7 +16,11 @@ function EditedBy(props) {
   );
 }
 
-function CommentList(props) {
+interface ICommentListProps {
+  comments: ICommentResource[];
+}
+
+function CommentList(props: ICommentListProps) {
   return (
     <ul>
       {props.comments.map((comment) => (
@@ -32,16 +33,32 @@ function CommentList(props) {
   );
 }
 
-function CommentCount(props) {
-  return (
-    <span className="text-sm font-semibold text-gray-400 hover:underline cursor-pointer">
-      View all {props.count} comments
-    </span>
-  );
+interface ICommentCountProps {
+  show: boolean;
+  count: number;
 }
 
-function Full(props) {
+function CommentCount(props: ICommentCountProps) {
+  if (props.show) {
+    return (
+      <span className="text-sm font-semibold text-gray-400 hover:underline cursor-pointer">
+        View all {props.count} comments
+      </span>
+    );
+  }
+
+  return null;
+}
+
+interface IFullProps {
+  comments: ICommentResource[];
+  layers: ILayerResource[];
+}
+
+function Full(props: IFullProps) {
   const [layer] = props.layers;
+
+  if (layer === undefined) return null;
 
   return (
     <>
@@ -51,9 +68,16 @@ function Full(props) {
   );
 }
 
-function Preview(props) {
+interface IPreviewProps {
+  comments: ICommentResource[];
+  layers: ILayerResource[];
+}
+
+function Preview(props: IPreviewProps) {
   const recent = props.comments.slice(0, 2);
   const [layer] = props.layers;
+
+  if (layer === undefined) return null;
 
   return (
     <>
@@ -65,6 +89,13 @@ function Preview(props) {
       <CommentList comments={recent} />
     </>
   );
+}
+
+interface IPostProps {
+  post: any;
+  children: React.ReactNode;
+  edit: boolean;
+  minimal: boolean;
 }
 
 export default function Post(props: IPostProps) {
@@ -89,9 +120,14 @@ export default function Post(props: IPostProps) {
         </div>
         <div onClick={withStopPropagation()}>
           {props.edit ? (
-            <Link className="secondary-button" to={`/posts/${props.post.id}`}>
-              Back
-            </Link>
+            <div className="space-x-2">
+              <Link className="success-button" to={`/posts/${props.post.id}`}>
+                Save
+              </Link>
+              <Link className="danger-button" to={`../`}>
+                Cancel
+              </Link>
+            </div>
           ) : (
             <Link
               className="primary-button"

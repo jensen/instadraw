@@ -57,7 +57,7 @@ const DrawingContext = React.createContext<IDrawingContext>({
   selectLayer: nop,
   highlightLayer: nop,
   unhighlightLayer: nop,
-  saveCanvas: nop,
+  saveCanvas: () => new ArrayBuffer(0),
 });
 
 const applicationConfig = {
@@ -81,7 +81,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   const renderer = rendererRef ? { renderer: rendererRef } : {};
 
   const [brush, setBrush] = useState<number>(6);
-  const [color, setColor] = useState<string>("ffffff");
+  const [color, setColor] = useState<string>("000000");
   const [isDrawing, setIsDrawing] = useState(false);
 
   const [layer, setLayer] = useState<number>(-1);
@@ -280,6 +280,7 @@ export function useColor(color: string) {
   if (!context) throw new Error("Must useColor inside of a DrawingProvider");
 
   return {
+    current: context.color,
     active: context.color === color,
     select: () => context.setColor(color),
   };

@@ -6,13 +6,6 @@ import { supabase } from "~/utils/auth";
 import Post from "~/components/Post";
 import LayerStack from "~/components/LayerStack";
 
-export let meta: MetaFunction = () => {
-  return {
-    title: "Index",
-    description: "Index Page",
-  };
-};
-
 export let loader: LoaderFunction = async ({ request }) => {
   const db = supabase();
 

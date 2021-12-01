@@ -30,7 +30,7 @@ interface ISwatchProps {}
 
 export default function Swatch(props: ISwatchProps) {
   return (
-    <div className="flex flex-col border border-r-0 bg-gray-300">
+    <div className="flex flex-col bg-gray-300">
       {flatui.map(({ id, value }) => (
         <Color key={id} color={value} />
       ))}

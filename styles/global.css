@@ -23,7 +23,6 @@ body {
   @apply inline-flex justify-center px-4 py-2;
   @apply text-sm font-medium;
   @apply border border-transparent rounded-md;
-  /* @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2; */
 }
 
 .primary-button {
@@ -43,5 +42,5 @@ body {
 
 .danger-button {
   @apply button;
-  @apply text-pink-900 bg-pink-100 hover:bg-pink-200;
+  @apply text-red-900 bg-red-100 hover:bg-red-200;
 }

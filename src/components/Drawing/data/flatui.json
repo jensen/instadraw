@@ -104,5 +104,10 @@
     "id": "white",
     "value": "ffffff",
     "label": "White"
+  },
+  {
+    "id": "black",
+    "value": "000000",
+    "label": "Black"
   }
 ]

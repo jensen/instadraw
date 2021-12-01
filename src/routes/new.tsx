@@ -1,8 +1,27 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { Form, useNavigate } from "remix";
-import { Fragment, useState } from "react";
-import { Navigate } from "react-router";
+import type { ActionFunction } from "remix";
+import { Form, useNavigate, redirect } from "remix";
+import { Fragment } from "react";
 import { PrimaryButton, SecondaryButton } from "~/components/common/Button";
+import { Dialog, Transition } from "@headlessui/react";
+import { supabase } from "~/utils/auth";
+
+export let action: ActionFunction = async ({ request }) => {
+  const db = supabase();
+  const body = await request.formData();
+
+  const post: Partial<IPostResource> = {
+    title: body.get("title") as string,
+  };
+
+  const { data, error } = await db
+    .from<IPostResource>("posts")
+    .insert(post)
+    .single();
+
+  if (data) {
+    return redirect(`/posts/${data.id}/edit`);
+  }
+};
 
 export default function NewPost() {
   const navigate = useNavigate();
@@ -29,7 +48,6 @@ export default function NewPost() {
             <Dialog.Overlay className="fixed inset-0" />
           </Transition.Child>
 
-          {/* This element is to trick the browser into centering the modal contents. */}
           <span
             className="inline-block h-screen align-middle"
             aria-hidden="true"
@@ -53,7 +71,7 @@ export default function NewPost() {
                 Create Post
               </Dialog.Title>
 
-              <Form method="post" action="/posts">
+              <Form method="post">
                 <input
                   name="title"
                   className="p-2 text-xl font-bold border-2 border-black rounded w-full"
@@ -63,7 +81,7 @@ export default function NewPost() {
                     What would you like to title your post?
                   </p>
                 </div>
-                <div className="mt-4 space-x-2">
+                <div className="mt-4 w-full flex justify-end space-x-2">
                   <PrimaryButton type="submit">Post</PrimaryButton>
                   <SecondaryButton onClick={cancel}>Cancel</SecondaryButton>
                 </div>
