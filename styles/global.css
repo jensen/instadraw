@@ -18,3 +18,30 @@ body {
 .discord-button {
   background-color: #5865f2;
 }
+
+.button {
+  @apply inline-flex justify-center px-4 py-2;
+  @apply text-sm font-medium;
+  @apply border border-transparent rounded-md;
+  /* @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2; */
+}
+
+.primary-button {
+  @apply button;
+  @apply text-indigo-900 bg-indigo-100 hover:bg-indigo-200;
+}
+
+.secondary-button {
+  @apply button;
+  @apply text-gray-900 bg-gray-100 hover:bg-gray-200;
+}
+
+.success-button {
+  @apply button;
+  @apply text-green-900 bg-green-100 hover:bg-green-200;
+}
+
+.danger-button {
+  @apply button;
+  @apply text-pink-900 bg-pink-100 hover:bg-pink-200;
+}

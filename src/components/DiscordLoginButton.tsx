@@ -1,14 +1,17 @@
-import { useSupabase } from "~/context/supabase";
+import { useSupabaseAuth } from "~/context/supabase";
 
 export default function DiscordLoginButton() {
-  const { supabase } = useSupabase();
+  const auth = useSupabaseAuth();
+  const user = auth?.user();
+
+  if (user) return null;
 
   return (
     <button
       type="submit"
       className="discord-button p-2 rounded flex items-center"
       onClick={() =>
-        supabase?.auth.signIn(
+        auth?.signIn(
           {
             provider: "discord",
           },

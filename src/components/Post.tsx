@@ -2,7 +2,6 @@ import { Form, Link } from "remix";
 import React from "react";
 import { format } from "date-fns";
 import { withStopPropagation } from "~/utils/events";
-import { RealtimeClient } from "@supabase/realtime-js";
 
 interface IPostProps {
   post: any;
@@ -11,50 +10,60 @@ interface IPostProps {
   minimal: boolean;
 }
 
+function EditedBy(props) {
+  return (
+    <h3 className="mb-2">
+      Edited by <span className="font-semibold">{props.user.name}</span> and{" "}
+      <span className="font-semibold">others</span>
+    </h3>
+  );
+}
+
+function CommentList(props) {
+  return (
+    <ul>
+      {props.comments.map((comment) => (
+        <li key={comment.id}>
+          <span className="font-semibold mr-1">{comment.user.name}</span>
+          <span className="text-sm">{comment.content}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function CommentCount(props) {
+  return (
+    <span className="text-sm font-semibold text-gray-400 hover:underline cursor-pointer">
+      View all {props.count} comments
+    </span>
+  );
+}
+
 function Full(props) {
   const [layer] = props.layers;
 
   return (
-    <div className="font-light">
-      <h3 className="mb-2">
-        Edited by <span className="font-semibold">{layer.user.name}</span> and{" "}
-        <span className="font-semibold">others</span>
-      </h3>
-      <ul>
-        {props.comments.map((comment) => (
-          <li key={comment.id}>
-            <span className="font-semibold mr-1">{comment.user.name}</span>
-            <span className="text-sm">{comment.content}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <EditedBy user={layer.user} />
+      <CommentList comments={props.comments} />
+    </>
   );
 }
 
 function Preview(props) {
   const recent = props.comments.slice(0, 2);
+  const [layer] = props.layers;
 
   return (
-    <div className="font-light">
-      <h3 className="mb-2">
-        Edited by <span className="font-semibold">jensen</span> and{" "}
-        <span className="font-semibold">others</span>
-      </h3>
-      {recent.length < props.comments.length && (
-        <span className="text-sm font-semibold text-gray-400 hover:underline cursor-pointer">
-          View all {props.comments.length} comments
-        </span>
-      )}
-      <ul>
-        {recent.map((comment) => (
-          <li key={comment.id}>
-            <span className="font-semibold mr-1">{comment.user.name}</span>
-            <span className="text-sm">{comment.content}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <EditedBy user={layer.user} />
+      <CommentCount
+        show={recent.length < props.comments.length}
+        count={props.comments.length}
+      />
+      <CommentList comments={recent} />
+    </>
   );
 }
 
@@ -80,9 +89,16 @@ export default function Post(props: IPostProps) {
         </div>
         <div onClick={withStopPropagation()}>
           {props.edit ? (
-            <Link to={`/posts/${props.post.id}`}>Back</Link>
+            <Link className="secondary-button" to={`/posts/${props.post.id}`}>
+              Back
+            </Link>
           ) : (
-            <Link to={`/posts/${props.post.id}/edit`}>Edit</Link>
+            <Link
+              className="primary-button"
+              to={`/posts/${props.post.id}/edit`}
+            >
+              Draw
+            </Link>
           )}
         </div>
       </header>
@@ -103,19 +119,26 @@ export default function Post(props: IPostProps) {
                   className="w-full p-4 bg-transparent text-md focus:outline-none"
                   placeholder="Add a comment..."
                 />
-                <button type="submit">Post</button>
+                <button className="text-indigo-800" type="submit">
+                  Post
+                </button>
               </section>
             </Form>
           </aside>
           <footer className="p-4 border rounded-b-sm">
-            {props.minimal ? (
-              <Preview
-                layers={props.post.layers}
-                comments={props.post.comments}
-              />
-            ) : (
-              <Full layers={props.post.layers} comments={props.post.comments} />
-            )}
+            <div className="font-light">
+              {props.minimal ? (
+                <Preview
+                  layers={props.post.layers}
+                  comments={props.post.comments}
+                />
+              ) : (
+                <Full
+                  layers={props.post.layers}
+                  comments={props.post.comments}
+                />
+              )}
+            </div>
           </footer>
         </>
       )}

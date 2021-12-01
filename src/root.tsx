@@ -17,6 +17,7 @@ import type { LinksFunction, ActionFunction, LoaderFunction } from "remix";
 import globalStylesUrl from "~/styles/global.css";
 import SupabaseProvider, { useSupabaseAuthListener } from "~/context/supabase";
 import DiscordLoginButton from "~/components/DiscordLoginButton";
+import Header from "~/components/Header";
 
 import create from "~/services/cookie.server";
 
@@ -130,30 +131,21 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
   return (
     <section className="h-full flex flex-col">
       <header className="p-4 bg-white border-b flex justify-between">
-        <h3 className="text-5xl tracking-tight leading-tight brand bg-gradient-to-l from-purple-500 via-pink-500 to-red-500 text-transparent bg-clip-text">
-          <Link to="/">Instadraw</Link>
-        </h3>
-        <div>
-          <DiscordLoginButton />
-          <form action="/posts" method="post">
-            <input name="title" />
-            <button type="submit">Create</button>
-          </form>
-        </div>
+        <Header />
       </header>
       <main className="flex-1 relative">
         <section className="h-full w-full  flex flex-col items-center p-4 absolute overflow-x-hidden overflow-y-scroll">
-          <div className="w-min">
-            {children}
-            <p className="pt-8 pb-4 text-gray-600 text-center">
-              Made by{" "}
-              <span className="ml-1 font-bold">
-                <a href="https://github.com/jensen/">@jensen</a>
-              </span>
-            </p>
-          </div>
+          <div className="w-min">{children}</div>
         </section>
       </main>
+      <footer>
+        <p className="py-4 border-t text-gray-600 text-center">
+          Made by{" "}
+          <span className="ml-1 font-bold">
+            <a href="https://github.com/jensen/">@jensen</a>
+          </span>
+        </p>
+      </footer>
     </section>
   );
 }

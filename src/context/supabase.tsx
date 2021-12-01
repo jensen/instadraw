@@ -89,6 +89,12 @@ export function useSupabase() {
   };
 }
 
+export function useSupabaseAuth() {
+  const { supabase } = useSupabaseContext();
+
+  return supabase?.auth;
+}
+
 export function useSupabaseAuthListener() {
   const { supabase } = useSupabaseContext();
   const submit = useSubmit();
