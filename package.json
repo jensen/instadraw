@@ -4,8 +4,9 @@
   "description": "",
   "license": "",
   "scripts": {
-    "build": "remix build",
+    "build": "npm run build:css && remix build",
     "dev": "remix dev",
+    "watch": "remix watch",
     "postinstall": "remix setup node",
     "dev:netlify": "cross-env NODE_ENV=development netlify dev",
     "watch:css": "postcss styles --base styles --dir src/styles -w",
