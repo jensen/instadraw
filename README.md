@@ -67,7 +67,7 @@ $ netlify deploy --prod
 
 ### Drawing with PixiJS
 
-The rendering is handled by the PixiJS library. PixiJS will render using WebGL, but can fallback to canvas rendering if that is all taht is available. It is used for browser game development, and can be found in engines like [Phaser](https://phaser.io/).
+The rendering is handled by the PixiJS library. PixiJS will render using WebGL, but can fallback to canvas rendering if GL is unavailable. It is used for browser game development, and can be found in engines like [Phaser](https://phaser.io/).
 
 When the user clicks the event listener for `mousedown` fires and sets some state to indicate that drawing is in progress. This state is called `isDrawing`.
 
@@ -129,7 +129,7 @@ useMouseMove(
 
 We want to store the data for the image as a `png` file. When we store objects using the Supabase API we can send them as an `ArrayBuffer`.
 
-With PixiJS there is an included plugin can convert the rendered layers to a `base64` encoded image. Decoding this image to an `ArrayBuffer` allows us to match the type of `data` that supabase expects.
+With PixiJS there is an included plugin that can convert the rendered layers to a `base64` encoded image. Decoding this image to an `ArrayBuffer` allows us to match the type of `data` that supabase expects.
 
 ```javascript
 return decode(
