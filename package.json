@@ -41,7 +41,6 @@
     "cross-env": "^7.0.3",
     "esbuild": "^0.13.15",
     "esbuild-jest": "^0.5.0",
-    "gl": "^4.9.2",
     "jest": "^27.3.1",
     "jest-canvas-mock": "^2.3.1",
     "pixi.js": "^6.2.0",
