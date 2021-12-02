@@ -1,28 +1,22 @@
 import { useCallback, useEffect, useRef } from "react";
 import { LoaderFunction, useBeforeUnload } from "remix";
-import {
-  useLoaderData,
-  json,
-  Link,
-  redirect,
-  useFetcher,
-  useNavigate,
-} from "remix";
-import { supabase } from "~/utils/auth";
+import { useLoaderData, json, useFetcher, useNavigate } from "remix";
+import { getSupabase } from "~/utils/auth";
+import { useSupabase } from "~/context/supabase";
+
 import Post from "~/components/Post";
 import Drawing from "~/components/Drawing";
-import { Navigate } from "react-router";
-import { useSupabase } from "~/context/supabase";
+import useUnload from "~/hooks/useUnload";
 
 type IPostLoaderData = {
   post: IPostResource;
 };
 
 export let loader: LoaderFunction = async ({ request, params }) => {
-  const db = supabase();
+  const db = await getSupabase(request);
 
   const { data: post, error } = await db
-    .from("posts")
+    .from<IPostResource>("posts")
     .select(
       "*, layers(*, user:user_id(*)), comments(*, user: user_id(*)), user: user_id(*)"
     )
@@ -43,15 +37,6 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
 interface IPostEditView {
   post: IPostResource;
-}
-
-export function useUnload(callback: () => any): void {
-  useEffect(() => {
-    window.addEventListener("unload", callback);
-    return () => {
-      window.removeEventListener("unload", callback);
-    };
-  }, [callback]);
 }
 
 const View = (props: IPostEditView) => {

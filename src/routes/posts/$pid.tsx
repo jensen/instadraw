@@ -1,24 +1,18 @@
 import type { LoaderFunction } from "remix";
 import { useLoaderData, json } from "remix";
-import { supabase } from "~/utils/auth";
+import { getSupabase } from "~/utils/auth";
 import Post from "~/components/Post";
 import LayerStack from "~/components/LayerStack";
 
-interface IPost {
-  id: string;
-  title: string;
-  layers: any[];
-}
-
 type IPostLoaderData = {
-  post: IPost;
+  post: IPostResource;
 };
 
 export let loader: LoaderFunction = async ({ request, params }) => {
-  const db = supabase();
+  const db = await getSupabase(request);
 
   const { data: post, error } = await db
-    .from("posts")
+    .from<IPostResource>("posts")
     .select(
       "*, layers(*, user: user_id(*)), comments(*, user: user_id(*)), user: user_id(*)"
     )
@@ -42,7 +36,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 };
 
 interface IPostView {
-  post: IPost;
+  post: IPostResource;
 }
 
 const View = (props: IPostView) => {

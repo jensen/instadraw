@@ -3,10 +3,10 @@ import { Form, useNavigate, redirect } from "remix";
 import { Fragment } from "react";
 import { PrimaryButton, SecondaryButton } from "~/components/common/Button";
 import { Dialog, Transition } from "@headlessui/react";
-import { supabase } from "~/utils/auth";
+import { getSupabase } from "~/utils/auth";
 
 export let action: ActionFunction = async ({ request }) => {
-  const db = supabase();
+  const db = await getSupabase(request);
   const body = await request.formData();
 
   const post: Partial<IPostResource> = {

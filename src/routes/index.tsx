@@ -1,16 +1,15 @@
-import type { MetaFunction, LoaderFunction } from "remix";
-import { useLoaderData, Link, useNavigate } from "remix";
-import { json } from "remix";
-import { supabase } from "~/utils/auth";
+import type { LoaderFunction } from "remix";
+import { useLoaderData, useNavigate, json } from "remix";
+import { getSupabase } from "~/utils/auth";
 
 import Post from "~/components/Post";
 import LayerStack from "~/components/LayerStack";
 
 export let loader: LoaderFunction = async ({ request }) => {
-  const db = supabase();
+  const db = await getSupabase(request);
 
   const { data, error } = await db
-    .from("posts")
+    .from<IPostResource>("posts")
     .select(
       "*, layers(*, user: user_id(*)), comments(*, user: user_id(*)), user:user_id(*)"
     );

@@ -20,7 +20,9 @@ function Size(props: ISizeProps) {
   return <div className={cx("rounded-full")} style={style} onClick={select} />;
 }
 
-export default function Brush(props) {
+interface IBrushProps {}
+
+export default function Brush(props: IBrushProps) {
   return (
     <div className="flex flex-col justify-center items-center space-y-2 px-2 py-4">
       {sizes.map((size) => (

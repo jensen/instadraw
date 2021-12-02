@@ -1,11 +1,11 @@
 import { ActionFunction } from "remix";
 import { redirect } from "remix";
-import { supabase } from "~/utils/auth";
+import { getSupabase } from "~/utils/auth";
 
 export let action: ActionFunction = async ({ request, params }) => {
-  const db = supabase();
+  const db = await getSupabase(request);
 
-  await db.from("posts").delete().match({ id: params.pid });
+  await db.from<IPostResource>("posts").delete().match({ id: params.pid });
 
   return redirect("/");
 };

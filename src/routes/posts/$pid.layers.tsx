@@ -1,24 +1,19 @@
 import type { ActionFunction } from "remix";
 import { redirect } from "remix";
-import { supabase } from "~/utils/auth";
-
-interface ILayer {
-  id: string;
-  image: string;
-  post_id: string;
-}
+import { getSupabase } from "~/utils/auth";
 
 export let action: ActionFunction = async ({ request, params }) => {
+  const supabase = await getSupabase(request);
   const body = await request.formData();
 
   const post_id = params.pid;
 
-  const layer: Partial<ILayer> = {
+  const layer: Partial<ILayerResource> = {
     image: body.get("image") as string,
     post_id,
   };
 
-  await supabase().from<ILayer>("layers").insert(layer);
+  await supabase.from<ILayerResource>("layers").insert(layer);
 
   return redirect(`/posts/${post_id}`);
 };
