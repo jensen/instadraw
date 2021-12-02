@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useColor } from "./context";
 import cx from "classnames";
 
 import bobross from "./data/bobross.json";
 import flatui from "./data/flatui.json";
+import bob from "../../../public/bob.png";
 
 interface ISizeProps {
   color: string;
@@ -29,11 +31,28 @@ function Color(props: ISizeProps) {
 interface ISwatchProps {}
 
 export default function Swatch(props: ISwatchProps) {
+  const [palette, setPalette] = useState(flatui);
+
   return (
-    <div className="flex flex-col bg-gray-300">
-      {flatui.map(({ id, value }) => (
-        <Color key={id} color={value} />
-      ))}
+    <div className="flex flex-col h-full justify-between bg-gray-300">
+      <div>
+        {palette.map(({ id, value }) => (
+          <Color key={id} color={value} />
+        ))}
+      </div>
+      <div>
+        <button
+          className={cx("hover:opacity-100", {
+            "opacity-40": palette === flatui,
+            "opacity-90": palette === bobross,
+          })}
+          onClick={() =>
+            setPalette((prev) => (prev === bobross ? flatui : bobross))
+          }
+        >
+          <img src={bob} />
+        </button>
+      </div>
     </div>
   );
 }
