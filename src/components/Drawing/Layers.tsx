@@ -1,20 +1,12 @@
 import cx from "classnames";
 import { useParams } from "remix";
 import { useSupabase } from "~/context/supabase";
-import { useLayers, useSaveLoad } from "./context";
-import {
-  LayerPlusIcon,
-  LayerMinusIcon,
-  EyeOpenIcon,
-  EyeClosedIcon,
-  SaveIcon,
-} from "./icons";
+import { SaveIcon } from "./icons";
 
 interface ILayersProps {}
 
 export default function Layers(props: ILayersProps) {
   const { pid } = useParams();
-  const { save } = useSaveLoad();
 
   const { busy, actions: supabase } = useSupabase();
 
@@ -28,7 +20,7 @@ export default function Layers(props: ILayersProps) {
               color="white"
               onClick={() =>
                 supabase.addLayer({
-                  data: save(),
+                  data: new ArrayBuffer(0),
                   post_id: pid || "",
                 })
               }

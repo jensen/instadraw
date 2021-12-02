@@ -24,7 +24,7 @@ interface IBrushProps {}
 
 export default function Brush(props: IBrushProps) {
   return (
-    <div className="flex flex-col justify-center items-center space-y-2 px-2 py-4">
+    <div className="flex flex-col items-center space-y-2 px-2 py-4">
       {sizes.map((size) => (
         <Size key={size} size={size} />
       ))}

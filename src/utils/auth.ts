@@ -6,6 +6,7 @@ async function getToken(cookie: string) {
   const { getSession } = create();
 
   const session = await getSession(cookie);
+
   return session.get("token");
 }
 

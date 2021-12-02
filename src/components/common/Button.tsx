@@ -27,7 +27,7 @@ export const DangerButton = styledButton("danger-button");
 
 export function Button({ className, ...props }: IButtonProps) {
   return (
-    <button className={cx(className)} {...props}>
+    <button className={cx(className, "disabled:opacity-20")} {...props}>
       {props.children}
     </button>
   );

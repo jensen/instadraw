@@ -35,10 +35,8 @@ interface IDrawingContext {
   stopDrawing: (event: MouseEvent) => void;
   layer: number;
   addLayer: () => void;
-  removeLayer: (index: number) => void;
-  selectLayer: (index: number) => void;
-  highlightLayer: (index: number) => void;
-  unhighlightLayer: (index: number) => void;
+  removeLayer: () => void;
+  removeLayers: () => void;
 }
 
 const nop = (v?: any) => null;
@@ -50,12 +48,10 @@ const DrawingContext = React.createContext<IDrawingContext>({
   setColor: nop,
   startDrawing: nop,
   stopDrawing: nop,
-  layer: 0,
+  layer: -1,
   addLayer: () => null,
   removeLayer: nop,
-  selectLayer: nop,
-  highlightLayer: nop,
-  unhighlightLayer: nop,
+  removeLayers: nop,
 });
 
 const applicationConfig = {
@@ -82,8 +78,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
   const [brush, setBrush] = useState<number>(6);
   const [color, setColor] = useState<string>("000000");
   const [isDrawing, setIsDrawing] = useState(false);
-
-  const [layer, setLayer] = useState<number>(-1);
+  const [layer, setLayer] = useState(-1);
 
   useEffect(() => {
     rendererRef.current = new PIXI.Application({
@@ -106,15 +101,8 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     layers.width = WIDTH;
     layers.height = HEIGHT;
 
-    const graphics = new PIXI.Graphics();
-    graphics.name = `layer${new Date().getTime()}`;
-
-    layers.addChildAt(graphics, 0);
-
     rendererRef.current.stage.addChildAt(backgrounds, ZINDEX.BACKGROUND);
     rendererRef.current.stage.addChildAt(layers, ZINDEX.LAYER);
-
-    setLayer(0);
 
     return () => {
       if (rendererRef.current) {
@@ -133,7 +121,9 @@ export function DrawingProvider(props: IDrawingProviderProps) {
           const layers = rendererRef.current.stage.getChildAt(
             ZINDEX.LAYER
           ) as Container;
-          const graphics = layers.getChildAt(layer || 0) as Graphics;
+          const graphics = layers.getChildAt(
+            layers.children.length - 1
+          ) as Graphics;
 
           graphics.beginFill(parseInt(color, 16));
 
@@ -151,11 +141,12 @@ export function DrawingProvider(props: IDrawingProviderProps) {
           previousPointRef.current = to;
         }
       },
-      [isDrawing, color, brush, layer]
+      [isDrawing, color, brush]
     )
   );
 
   const startDrawing = (event: MouseEvent) => {
+    addLayer();
     setIsDrawing(true);
   };
 
@@ -169,44 +160,37 @@ export function DrawingProvider(props: IDrawingProviderProps) {
       ZINDEX.LAYER
     ) as Container;
 
-    const next = (layer || 0) + 1;
+    const next = layers.children.length;
 
     const graphics = new PIXI.Graphics();
     graphics.name = `layer${new Date().getTime()}`;
 
     layers.addChildAt(graphics, next);
 
-    setLayer(next);
+    setLayer((prev) => prev + 1);
   };
 
-  const removeLayer = (index) => {
+  const removeLayer = () => {
     const layers = rendererRef.current?.stage.getChildAt(
       ZINDEX.LAYER
     ) as Container;
 
-    const selected = index === layer ? layer - 1 : layer;
+    const index = layers.children.length - 1;
+
+    if (index < 0) return;
 
     layers.removeChildAt(index);
 
-    setLayer(selected > 0 ? selected : 0);
+    setLayer(layers.children.length - 1);
   };
 
-  const highlightLayer = (index: number) => {
+  const removeLayers = () => {
     const layers = rendererRef.current?.stage.getChildAt(
       ZINDEX.LAYER
     ) as Container;
-    const current = layers.getChildAt(index) as Graphics;
 
-    current.tint = 0xdddddd;
-  };
-
-  const unhighlightLayer = (index: number) => {
-    const layers = rendererRef.current?.stage.getChildAt(
-      ZINDEX.LAYER
-    ) as Container;
-    const current = layers.getChildAt(index) as Graphics;
-
-    current.tint = 0xffffff;
+    layers.removeChildren();
+    setLayer(-1);
   };
 
   useEffect(() => {
@@ -244,9 +228,7 @@ export function DrawingProvider(props: IDrawingProviderProps) {
         layer,
         addLayer,
         removeLayer,
-        selectLayer: setLayer,
-        highlightLayer,
-        unhighlightLayer,
+        removeLayers,
       }}
     >
       {props.children}
@@ -297,32 +279,19 @@ export function useDrawing() {
   };
 }
 
-export function useLayers() {
+export function useUndo() {
   const context = useContext(DrawingContext);
 
   if (!context) throw new Error("Must useLayers inside of a DrawingProvider");
 
-  const container = context.renderer?.current?.stage.getChildAt(
+  const layers = context.renderer?.current?.stage.getChildAt(
     ZINDEX.LAYER
   ) as Container;
 
-  const layers = container?.children ?? [];
-
   return {
-    current: context.layer,
-    layers,
-    add: context.addLayer,
-    select: context.selectLayer,
-    hover: [context.highlightLayer, context.unhighlightLayer],
-  };
-}
-
-export function useSaveLoad() {
-  const context = useContext(DrawingContext);
-
-  if (!context) throw new Error("Must useSaveLoad inside of a DrawingProvider");
-
-  return {
-    save: context.saveCanvas,
+    undo: context.removeLayer,
+    clear: context.removeLayers,
+    canUndo: context.layer >= 0 || false,
+    canClear: context.layer >= 0 || false,
   };
 }
