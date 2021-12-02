@@ -12,7 +12,8 @@ export let loader: LoaderFunction = async ({ request }) => {
     .from<IPostResource>("posts")
     .select(
       "*, layers(*, user: user_id(*)), comments(*, user: user_id(*)), user:user_id(*)"
-    );
+    )
+    .order("created_at", { ascending: false });
   const posts = data ? [...data] : [];
 
   return json({
