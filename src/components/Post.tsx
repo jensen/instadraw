@@ -1,5 +1,5 @@
-import { Form, Link } from "remix";
-import React from "react";
+import { Form, Link, useTransition } from "remix";
+import React, { useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { withStopPropagation } from "~/utils/events";
 import { DangerButton, SuccessButton } from "~/components/common/Button";
@@ -103,6 +103,16 @@ interface IPostProps {
 
 export default function Post(props: IPostProps) {
   const auth = useSupabaseAuth();
+  const transition = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (transition.state === "loading") {
+      if (transition.type === "actionRedirect") {
+        formRef.current?.reset();
+      }
+    }
+  }, [transition]);
 
   return (
     <article className="bg-gray-50">
@@ -180,6 +190,7 @@ export default function Post(props: IPostProps) {
               }
             >
               <Form
+                ref={formRef}
                 method="post"
                 action={`/posts/${props.post.id}/comments`}
                 onClick={withStopPropagation()}
