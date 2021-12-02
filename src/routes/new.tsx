@@ -83,7 +83,9 @@ export default function NewPost() {
                 </div>
                 <div className="mt-4 w-full flex justify-end space-x-2">
                   <PrimaryButton type="submit">Post</PrimaryButton>
-                  <SecondaryButton onClick={cancel}>Cancel</SecondaryButton>
+                  <SecondaryButton type="button" onClick={cancel}>
+                    Cancel
+                  </SecondaryButton>
                 </div>
               </Form>
             </div>

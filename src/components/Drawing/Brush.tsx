@@ -24,7 +24,7 @@ export default function Brush(props) {
   return (
     <div className="flex flex-col justify-center items-center space-y-2 px-2 py-4">
       {sizes.map((size) => (
-        <Size size={size} />
+        <Size key={size} size={size} />
       ))}
     </div>
   );

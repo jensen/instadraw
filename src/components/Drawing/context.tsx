@@ -39,7 +39,6 @@ interface IDrawingContext {
   selectLayer: (index: number) => void;
   highlightLayer: (index: number) => void;
   unhighlightLayer: (index: number) => void;
-  saveCanvas: () => ArrayBuffer;
 }
 
 const nop = (v?: any) => null;
@@ -57,7 +56,6 @@ const DrawingContext = React.createContext<IDrawingContext>({
   selectLayer: nop,
   highlightLayer: nop,
   unhighlightLayer: nop,
-  saveCanvas: () => new ArrayBuffer(0),
 });
 
 const applicationConfig = {
@@ -70,6 +68,7 @@ const applicationConfig = {
 
 interface IDrawingProviderProps {
   backgrounds: any[];
+  saveRef: React.MutableRefObject<() => void>;
   children: React.ReactNode;
 }
 
@@ -210,24 +209,26 @@ export function DrawingProvider(props: IDrawingProviderProps) {
     current.tint = 0xffffff;
   };
 
-  const saveCanvas = () => {
-    const layers = rendererRef.current?.stage.getChildAt(
-      ZINDEX.LAYER
-    ) as Container;
+  useEffect(() => {
+    props.saveRef.current = () => {
+      const layers = rendererRef.current?.stage.getChildAt(
+        ZINDEX.LAYER
+      ) as Container;
 
-    const frame = new PIXI.Graphics();
+      const frame = new PIXI.Graphics();
 
-    frame.lineStyle(1, 0xe6e6e6);
-    frame.drawRect(0, 0, WIDTH, HEIGHT);
+      frame.lineStyle(1, 0xe6e6e6);
+      frame.drawRect(0, 0, WIDTH, HEIGHT);
 
-    layers.addChild(frame);
+      layers.addChild(frame);
 
-    return decode(
-      rendererRef.current?.renderer.plugins.extract
-        .base64(layers)
-        .replace(/^data:image\/\w+;base64,/, "")
-    );
-  };
+      return decode(
+        rendererRef.current?.renderer.plugins.extract
+          .base64(layers)
+          .replace(/^data:image\/\w+;base64,/, "")
+      );
+    };
+  });
 
   return (
     <DrawingContext.Provider
@@ -246,7 +247,6 @@ export function DrawingProvider(props: IDrawingProviderProps) {
         selectLayer: setLayer,
         highlightLayer,
         unhighlightLayer,
-        saveCanvas,
       }}
     >
       {props.children}
@@ -274,7 +274,7 @@ export function useBrush(size: number) {
   };
 }
 
-export function useColor(color: string) {
+export function useColor(color?: string) {
   const context = useContext(DrawingContext);
 
   if (!context) throw new Error("Must useColor inside of a DrawingProvider");
@@ -282,7 +282,7 @@ export function useColor(color: string) {
   return {
     current: context.color,
     active: context.color === color,
-    select: () => context.setColor(color),
+    select: () => context.setColor(color || "ffffff"),
   };
 }
 

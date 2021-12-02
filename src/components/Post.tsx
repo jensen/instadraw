@@ -2,6 +2,7 @@ import { Form, Link } from "remix";
 import React from "react";
 import { format } from "date-fns";
 import { withStopPropagation } from "~/utils/events";
+import { DangerButton, SuccessButton } from "~/components/common/Button";
 
 interface IEditedByProps {
   user: any;
@@ -96,6 +97,7 @@ interface IPostProps {
   children: React.ReactNode;
   edit: boolean;
   minimal: boolean;
+  onSave?: (data) => void;
 }
 
 export default function Post(props: IPostProps) {
@@ -121,12 +123,20 @@ export default function Post(props: IPostProps) {
         <div onClick={withStopPropagation()}>
           {props.edit ? (
             <div className="space-x-2">
-              <Link className="success-button" to={`/posts/${props.post.id}`}>
-                Save
-              </Link>
-              <Link className="danger-button" to={`../`}>
-                Cancel
-              </Link>
+              <SuccessButton onClick={props.onSave}>Save</SuccessButton>
+              {props.post.layers.length > 0 ? (
+                <Link className="danger-button" to={`/posts/${props.post.id}`}>
+                  Cancel
+                </Link>
+              ) : (
+                <Form
+                  className="inline"
+                  action={`/posts/${props.post.id}/delete`}
+                  method="post"
+                >
+                  <DangerButton type="submit">Cancel</DangerButton>
+                </Form>
+              )}
             </div>
           ) : (
             <Link

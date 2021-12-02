@@ -71,7 +71,6 @@ export function useSupabase() {
           const body = new FormData();
 
           body.append("image", uploadResponse.data.Key);
-          body.append("post_id", post_id);
 
           submit(body, { method: "post", action: `/posts/${post_id}/layers` });
         }

@@ -25,6 +25,10 @@ export let loader: LoaderFunction = async ({ request, params }) => {
     .match({ id: params.pid })
     .maybeSingle();
 
+  if (!post) {
+    return json(null, 404);
+  }
+
   return json({
     post: {
       ...post,

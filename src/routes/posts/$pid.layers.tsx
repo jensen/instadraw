@@ -8,10 +8,10 @@ interface ILayer {
   post_id: string;
 }
 
-export let action: ActionFunction = async ({ request }) => {
+export let action: ActionFunction = async ({ request, params }) => {
   const body = await request.formData();
 
-  const post_id = body.get("post_id") as string;
+  const post_id = params.pid;
 
   const layer: Partial<ILayer> = {
     image: body.get("image") as string,

@@ -17,14 +17,17 @@ export let loader: LoaderFunction = async ({ request }) => {
   const posts = data ? [...data] : [];
 
   return json({
-    posts: posts.map((post) => ({
-      ...post,
-      layers: post.layers.map((layer) => ({
-        ...layer,
-        image: db.storage.from("layers").getPublicUrl(layer.image.split("/")[1])
-          .publicURL,
+    posts: posts
+      .filter((post) => post.layers.length > 0)
+      .map((post) => ({
+        ...post,
+        layers: post.layers.map((layer) => ({
+          ...layer,
+          image: db.storage
+            .from("layers")
+            .getPublicUrl(layer.image.split("/")[1]).publicURL,
+        })),
       })),
-    })),
   });
 };
 
