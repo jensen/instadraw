@@ -76,10 +76,11 @@ interface IPreviewProps {
 }
 
 function Preview(props: IPreviewProps) {
-  const recent = props.comments.slice(0, 2);
   const [layer] = props.layers;
 
   if (layer === undefined) return null;
+
+  const recent = props.comments.slice(-2);
 
   return (
     <>
