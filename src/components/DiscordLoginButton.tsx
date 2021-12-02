@@ -11,16 +11,9 @@ export default function DiscordLoginButton() {
       type="submit"
       className="discord-button p-2 rounded flex items-center"
       onClick={() =>
-        auth?.signIn(
-          {
-            provider: "discord",
-          },
-          {
-            redirectTo: `${
-              (window as WindowWithEnvironment).env.CLIENT_HOST
-            }/auth`,
-          }
-        )
+        auth?.signIn({
+          provider: "discord",
+        })
       }
     >
       <svg

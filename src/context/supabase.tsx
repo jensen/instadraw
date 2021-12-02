@@ -112,3 +112,19 @@ export function useSupabaseAuthListener() {
     };
   }, []);
 }
+
+interface ISupabaseUserProps {
+  fallback?: React.ReactChild;
+  children: React.ReactNode;
+}
+
+export function SupabaseUser(
+  props: React.PropsWithChildren<ISupabaseUserProps>
+) {
+  const auth = useSupabaseAuth();
+  const user = auth?.user();
+
+  if (user) return props.children || null;
+
+  return props.fallback || null;
+}

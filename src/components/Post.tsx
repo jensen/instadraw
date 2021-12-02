@@ -3,6 +3,7 @@ import React from "react";
 import { format } from "date-fns";
 import { withStopPropagation } from "~/utils/events";
 import { DangerButton, SuccessButton } from "~/components/common/Button";
+import { SupabaseUser, useSupabaseAuth } from "~/context/supabase";
 
 interface IEditedByProps {
   user: any;
@@ -101,6 +102,8 @@ interface IPostProps {
 }
 
 export default function Post(props: IPostProps) {
+  const auth = useSupabaseAuth();
+
   return (
     <article className="bg-gray-50">
       <header className="border border-b-0 rounded-t-sm flex justify-between items-center p-4">
@@ -120,33 +123,38 @@ export default function Post(props: IPostProps) {
             </h5>
           </div>
         </div>
-        <div onClick={withStopPropagation()}>
-          {props.edit ? (
-            <div className="space-x-2">
-              <SuccessButton onClick={props.onSave}>Save</SuccessButton>
-              {props.post.layers.length > 0 ? (
-                <Link className="danger-button" to={`/posts/${props.post.id}`}>
-                  Cancel
-                </Link>
-              ) : (
-                <Form
-                  className="inline"
-                  action={`/posts/${props.post.id}/delete`}
-                  method="post"
-                >
-                  <DangerButton type="submit">Cancel</DangerButton>
-                </Form>
-              )}
-            </div>
-          ) : (
-            <Link
-              className="primary-button"
-              to={`/posts/${props.post.id}/edit`}
-            >
-              Draw
-            </Link>
-          )}
-        </div>
+        <SupabaseUser>
+          <div onClick={withStopPropagation()}>
+            {props.edit ? (
+              <div className="space-x-2">
+                <SuccessButton onClick={props.onSave}>Save</SuccessButton>
+                {props.post.layers.length > 0 ? (
+                  <Link
+                    className="danger-button"
+                    to={`/posts/${props.post.id}`}
+                  >
+                    Cancel
+                  </Link>
+                ) : (
+                  <Form
+                    className="inline"
+                    action={`/posts/${props.post.id}/delete`}
+                    method="post"
+                  >
+                    <DangerButton type="submit">Cancel</DangerButton>
+                  </Form>
+                )}
+              </div>
+            ) : (
+              <Link
+                className="primary-button"
+                to={`/posts/${props.post.id}/edit`}
+              >
+                Draw
+              </Link>
+            )}
+          </div>
+        </SupabaseUser>
       </header>
       <main className="p-2 border">
         <div className="bg-white">{props.children}</div>
@@ -154,22 +162,40 @@ export default function Post(props: IPostProps) {
       {props.edit === false && (
         <>
           <aside className="border-l border-r hover:shadow-md hover:bg-gray-100">
-            <Form
-              method="post"
-              action={`/posts/${props.post.id}/comments`}
-              onClick={withStopPropagation()}
+            <SupabaseUser
+              fallback={
+                <p className="px-4 py-2 text-sm text-gray-400">
+                  <button
+                    className="text-indigo-800 font-bold hover:text-indigo-900"
+                    onClick={() =>
+                      auth?.signIn({
+                        provider: "discord",
+                      })
+                    }
+                  >
+                    Login
+                  </button>{" "}
+                  to post a comment
+                </p>
+              }
             >
-              <section className="flex pr-4">
-                <input
-                  name="content"
-                  className="w-full p-4 bg-transparent text-md focus:outline-none"
-                  placeholder="Add a comment..."
-                />
-                <button className="text-indigo-800" type="submit">
-                  Post
-                </button>
-              </section>
-            </Form>
+              <Form
+                method="post"
+                action={`/posts/${props.post.id}/comments`}
+                onClick={withStopPropagation()}
+              >
+                <section className="flex pr-4">
+                  <input
+                    name="content"
+                    className="w-full p-4 bg-transparent text-md focus:outline-none"
+                    placeholder="Add a comment..."
+                  />
+                  <button className="text-indigo-800" type="submit">
+                    Post
+                  </button>
+                </section>
+              </Form>
+            </SupabaseUser>
           </aside>
           <footer className="p-4 border rounded-b-sm">
             <div className="font-light">

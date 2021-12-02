@@ -1,6 +1,6 @@
 import DiscordLoginButton from "./DiscordLoginButton";
 import { Link, useMatches } from "remix";
-import { useSupabaseAuth } from "~/context/supabase";
+import { SupabaseUser } from "~/context/supabase";
 
 const showCreateButton = (matches) => {
   const last = matches[matches.length - 1];
@@ -13,8 +13,6 @@ const showCreateButton = (matches) => {
 
 export default function Header() {
   const matches = useMatches();
-  const auth = useSupabaseAuth();
-  const user = auth?.user();
 
   return (
     <>
@@ -23,11 +21,13 @@ export default function Header() {
       </h3>
       <div className="flex place-items-center">
         <DiscordLoginButton />
-        {showCreateButton(matches) && user && (
-          <Link className="primary-button" to="/new">
-            New Post
-          </Link>
-        )}
+        <SupabaseUser>
+          {showCreateButton(matches) && (
+            <Link className="primary-button" to="/new">
+              New Post
+            </Link>
+          )}
+        </SupabaseUser>
       </div>
     </>
   );
