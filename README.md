@@ -4,6 +4,8 @@ This project was completed as part of a group learning exercise.
 
 ## Demo
 
+https://user-images.githubusercontent.com/14803/144395610-e15832a6-4bea-41c9-b519-e54b440dd229.mp4
+
 [https://instadraw.netlify.app/](https://instadraw.netlify.app/)
 
 ## Project Features
@@ -92,7 +94,6 @@ useMouseMove(
         const graphics = layers.getChildAt(
           layers.children.length - 1
         ) as Graphics;
-
 
         /* any drawing should be the color that is chosen
            as the current brush */
